@@ -215,9 +215,11 @@ function Home(){
                     </Grid>
 
                     <TextField id="minPrice" label="Min price" type="number"
+                               onChange={(event) => handleFilterChange('minPrice', event.target.value)}
                                inputProps={{ min: 1 }}
                                variant="standard" />
                     <TextField id="maxPrice" label="Max price" type="number"
+                               onChange={(event) => handleFilterChange('maxPrice', event.target.value)}
                                inputProps={{ min: 1 }}
                                variant="standard" />
 
