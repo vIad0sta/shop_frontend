@@ -3,12 +3,15 @@ import React from "react";
 import Registration from "./Components/Registration";
 import Login from "./Components/Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import NavBar from "./Components/NavBar";
+import Home from "./Components/Home";
 
 function App() {
   return (
       <BrowserRouter>
+          <NavBar/>
           <Routes>
-            {/*<Route path="/" element={<Home />} />*/}
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/registration" element={<Registration />} />
             {/*<Route path="/profile" element={<Profile />} />*/}
