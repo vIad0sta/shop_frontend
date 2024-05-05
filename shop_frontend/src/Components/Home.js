@@ -14,6 +14,7 @@ import {
     ToggleButtonGroup
 } from "@mui/material";
 import CategoryRequests from "../Requests/CategoryRequests";
+import ProductShortCut from "./ProductShortCut";
 
 const paginationStyles = css`
       .MuiPaginationItem-root {
@@ -60,8 +61,8 @@ function Home(){
     }
     const onPageChange = (event, value) => {
         event.preventDefault()
-        setCurrentPage(value);
-        setParams({...params, page: value});
+        setCurrentPage(value - 1);
+        setParams({...params, page: value - 1});
     }
     const renderSkeletons = () => {
         const skeletons = [];
@@ -234,6 +235,11 @@ function Home(){
                     ))}
                 </div>
             ))}
+            {products &&
+                products.map((item) => (
+                    <ProductShortCut product={item}/>
+                ))
+            }
             <Pagination
                 onChange={onPageChange}
                 color={'secondary'}
