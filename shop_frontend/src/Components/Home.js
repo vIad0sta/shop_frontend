@@ -110,6 +110,9 @@ function Home(){
         setPriceRange(newValue);
         setParams({...params, minPrice: newValue[0], maxPrice: newValue[1]})
     };
+    const handleGoToProduct = (productId) => {
+        window.location.href = `/product/${productId}`
+    }
     return (
         <Container maxWidth="xl" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', marginTop: '35px'}}>
             <Grid container maxWidth="md" justify="center" spacing={2} style={{ border: '1px solid #ccc', backgroundColor: '#f9f9f9', paddingRight: '15px', paddingBottom: '15px'}}>
@@ -198,7 +201,7 @@ function Home(){
             ))}
             <Grid container spacing={2} style={{marginTop: '20px'}}>
                 {products && products.map((item, index) => (
-                    <Grid key={index} item xs={3}>
+                    <Grid key={index} item xs={3} onClick={() => handleGoToProduct(item.id)}>
                         <ProductShortCut product={item}/>
                     </Grid>
                 ))}

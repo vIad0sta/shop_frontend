@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavBar from "./Components/NavBar";
 import Home from "./Components/Home";
 import Profile from "./Components/Profile";
+import ProductPage from "./Components/ProductPage";
 
 function App() {
   return (
@@ -16,10 +17,12 @@ function App() {
             <Route path="/login" element={<Login />}/>
             <Route path="/registration" element={<Registration />}/>
               <Route path="/profile" element={<Profile />} />
+              <Route path="/product/:id" element={<ProductPage />} />
 
 
 
-                  {/*<Route path="/profile" element={<Profile />} />*/}
+
+              {/*<Route path="/profile" element={<Profile />} />*/}
             {/*<Route path="/error" element={<ErrorPage />} />*/}
             {/*<Route path="/events/:eventId" element={<EventPage cart={cart} cartTickets={tickets} setCart={setCart} setTickets={setTickets}/>} />*/}
             {/*<Route path="/events/:eventId/tickets" element={<TicketsCreator />} />*/}
