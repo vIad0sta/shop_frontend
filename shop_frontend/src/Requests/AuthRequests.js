@@ -7,7 +7,13 @@ export default class AuthRequests{
     static async login(body){
         return (await axiosInstance.post(`${url}/login`, body)).data;
     }
-    static async restorePassword(body){
+    static async logout(body){
+        await axiosInstance.post('/logout');
+        localStorage.clear();
+        sessionStorage.clear();
+    }
+
+        static async restorePassword(body){
         return (await axiosInstance.post(`${url}/forgot-password`, body)).data;
     }
     static async changePassword(body){

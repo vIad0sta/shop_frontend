@@ -6,20 +6,20 @@ const axiosInstance = axios.create({
     baseURL: `https://localhost:8080`
 });
 
-// axiosInstance.interceptors.request.use(
-//     async config => {
-//         if(config.url.includes('auth')) return config;
-//         const expiredAt = localStorage.getItem('expiredAt');
-//         if (expiredAt && new Date(Date.now()) >= new Date(Date.parse(expiredAt))) {
-//            const response = await axios.post(`https://localhost:3001/api/auth/refresh-access`, {}, {withCredentials: true});
-//            localStorage.setItem('expiredAt', response.data.expiredAt)
-//         }
-//         return config;
-//     },
-//     error => {
-//         return Promise.reject(error);
-//     }
-// );
+axiosInstance.interceptors.request.use(
+    async config => {
+        if(config.url.includes('auth')) return config;
+        const expiredAt = localStorage.getItem('expiredAt');
+        if (expiredAt && new Date(Date.now()) >= new Date(Date.parse(expiredAt))) {
+           const response = await axios.post(`https://localhost:8080/tokens/refresh`, {}, {withCredentials: true});
+           localStorage.setItem('expiredAt', new Date(response.data))
+        }
+        return config;
+    },
+    error => {
+        return Promise.reject(error);
+    }
+);
 
 // axiosInstance.interceptors.response.use(
 //     response => {

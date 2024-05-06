@@ -10,7 +10,9 @@ function Login(){
         setInputs({...inputs, [event.target.name]: event.target.value})   ;
     }
     const handleSubmit = async () => {
-        await AuthRequests.login(inputs);
+        const loginResponse = await AuthRequests.login(inputs);
+        localStorage.setItem('expiredAt',new Date(loginResponse))
+        localStorage.setItem('signedIn','true')
         window.location.href = '/';
     }
     return (

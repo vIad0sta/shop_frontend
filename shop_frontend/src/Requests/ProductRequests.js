@@ -8,6 +8,14 @@ export default class ProductRequests{
     static async getProduct(productId){
         return (await axiosInstance.get(`${url}/${productId}`)).data;
     }
+    static async getProductsByIdArray(productIds){
+        const promises = productIds.map(productId =>
+            axiosInstance.get(`${url}/${productId}`)
+        );
+        const responses = await Promise.all(promises);
+        return responses.map(response => response.data);
+    }
+
     static async getProductReviews(productId){
         return (await axiosInstance.get(`${url}/${productId}/reviews`)).data;
     }
