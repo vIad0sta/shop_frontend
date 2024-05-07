@@ -28,8 +28,8 @@ export default class ProductRequests{
     static async getProductsSizes() {
         return (await axiosInstance.get(`${url}/sizes`)).data;
     }
-    static async getProductsPages() {
-        return (await axiosInstance.get(`${url}/pagesAmount`)).data;
+    static async getProductsPages(params) {
+        return (await axiosInstance.get(`${url}/pagesAmount?${new URLSearchParams(params)}`)).data;
     }
     static async addProduct(body){
         return (await axiosInstance.post(`${url}`, body)).data;

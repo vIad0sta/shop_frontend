@@ -2,9 +2,9 @@ import {useEffect, useState} from "react";
 import ProductRequests from "../Requests/ProductRequests";
 import {
     Autocomplete,
-    Button, ButtonGroup,
+    Button, ButtonGroup, Checkbox,
     Container,
-    css, Grid,
+    css, FormControl, FormControlLabel, FormGroup, FormLabel, Grid,
     MenuItem,
     Pagination,
     Select,
@@ -41,14 +41,10 @@ function Home(){
     }, []);
 
     const fetchData = async () => {
-        const productsData = await ProductRequests.getAllProducts({});
-        setProducts(productsData);
         const categoriesData = await CategoryRequests.getCategories();
         setCategories(categoriesData);
         const sizesData = await ProductRequests.getProductsSizes();
         setSizes(sizesData);
-        const pagesData = await ProductRequests.getProductsPages();
-        setPagesCount(pagesData);
     }
     useEffect(() => {
         fetchProducts();
@@ -57,6 +53,8 @@ function Home(){
         console.log(params)
         const productsData = await ProductRequests.getAllProducts(params);
         setProducts(productsData);
+        const pagesData = await ProductRequests.getProductsPages(params);
+        setPagesCount(pagesData);
     }
     const onPageChange = (event, value) => {
         event.preventDefault()
@@ -82,134 +80,128 @@ function Home(){
             setParams(updatedParams);
         }
     };
-
-    const handleFilterChange = (elementName, value) => {
-        if (value === '' || value.length === 0) {
-            const { [elementName]: deletedField, ...updatedParams } = params;
-            setParams(updatedParams);
+    const handleFiltersChange = (elementName, value, checked) => {
+        const oldValue = params.hasOwnProperty(elementName) ? params[elementName] : [];
+        const newValue = checked ? [...oldValue, value] : oldValue.filter((c) => c !== value);
+        if (newValue.length > 0) {
+            setParams({ ...params, [elementName]: newValue });
         } else {
-            setParams({...params, [elementName]: value});
+            const { [elementName]: deletedField,  ...updatedParams } = params;
+            setParams(updatedParams);
         }
     };
-    // const handleGenderChange = (value) => {
-    //     if (value === '') {
-    //         const { gender: deletedField, ...updatedParams } = params;
-    //         setParams(updatedParams);        }
-    //     else {
-    //         const genderArr = params.gender ? [...params.gender] : [];
-    //         if (!genderArr.includes(value)) {
-    //             setParams({ ...params, gender: [...genderArr, value] });
-    //         } else {
-    //             const updatedGenderArr = genderArr.filter((item) => item !== value);
-    //             const updatedParams = updatedGenderArr.length > 0 ? { ...params, gender: updatedGenderArr } : { ...params, gender: undefined };
-    //             setParams(updatedParams);
-    //         }
-    //     }
-    // }
     const handleChange = (event, newValue) => {
         setPriceRange(newValue);
         setParams({...params, minPrice: newValue[0], maxPrice: newValue[1]})
     };
     return (
-        <Container maxWidth="xl" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', marginTop: '35px'}}>
-            <Grid container maxWidth="md" justify="center" spacing={2} style={{ border: '1px solid #ccc', backgroundColor: '#f9f9f9', paddingRight: '15px', paddingBottom: '15px'}}>
-                <Grid item xs={6} textAlign={'center'}>
-                    {categories && (
-                        <Autocomplete
-                            id="category"
-                            multiple
-                            options={categories}
-                            disableCloseOnSelect
-                            onChange={(event, value, reason, details) => handleFilterChange('category',value.map((item) =>  item.value))}
-                            renderInput={(params) => <TextField {...params} label="Categories" />}
-                            isOptionEqualToValue={(option, value) => option.id === value.id}
-                            getOptionLabel={(option) => option.label}
-                            getOptionSelected={(option, value) => option.value === value.value}
-                        />
-                    )}
-                </Grid>
-                <Grid item xs={6} textAlign={'center'}>
-                    {sizes && (
-                        <Autocomplete
-                            id="size"
-                            multiple
-                            options={sizes}
-                            disableCloseOnSelect
-                            onChange={(event, value, reason, details) => handleFilterChange('sizes',value.map((item) =>  item.name))}
-                            renderInput={(params) => <TextField {...params} label="Sizes" />}
-                            isOptionEqualToValue={(option, value) => option.id === value.id}
-                            getOptionLabel={(option) => option.name}
-                            getOptionSelected={(option, value) => option.id === value.id}
-                        />
-                    )}
-                </Grid>
-                <Grid item xs={5} style={{ textAlign: 'center'}}>
-                    <ButtonGroup variant="outlined" color="primary" aria-label="sort">
-                        <Button
-                            onClick={() => handleSort('')} variant={ !params.sort ? 'contained' : 'outlined'}
-                                >
-                            None
-                                </Button>
-                                <Button
-                                    onClick={() => handleSort('price')}
-                                    endIcon={ params.sort === 'price' && (params.direction === 'asc' ? '🔼' : '🔽')}
-                                >
-                                    Price
-                                </Button>
-                                <Button
-                                    onClick={() => handleSort('discount')}
-                                    endIcon={ params.sort === 'discount' && (params.direction === 'asc' ? '🔼' : '🔽')}
-                                >
-                                    Discount
-                                </Button>
-                                <Button
-                                    onClick={() => handleSort('averageReviewMark')}
-                                    endIcon={ params.sort === 'averageReviewMark' && (params.direction === 'asc' ? '🔼' : '🔽')}
-                                >
-                                    Rating
-                                </Button>
+        <Container maxWidth="xl" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh',  minWidth: '100%', marginTop: '40px'}}>
+            <Grid container textAlign={'left'} spacing={5} style={{minWidth: "100%"}}>
+                <Grid item xl={2} xs={2} md={2}>
+                    <Grid container direction={"column"} spacing={2} style={{ border: '1px solid #ccc', backgroundColor: '#f9f9f9'}}>
+                        <Grid item xl={1} xs={1} md={1}>
+                            <FormControl component="fieldset">
+                                <FormLabel component="legend">Категорії</FormLabel>
+                                <FormGroup>
+                                    {categories && categories.map((category) => (
+                                        <FormControlLabel
+                                            key={category.id}
+                                            control={<Checkbox checked={params.categories && params.categories.includes(category.value)} onChange={(event) => handleFiltersChange('categories',category.value, event.target.checked)} />}
+                                            label={category.label}
+                                        />
+                                    ))}
+                                </FormGroup>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xl={1} xs={1} md={1}>
+                            <FormControl component="fieldset">
+                                <FormLabel component="legend">Розміри</FormLabel>
+                                <FormGroup>
+                                    {sizes && sizes.map((size) => (
+                                        <FormControlLabel
+                                            key={size.id}
+                                            control={<Checkbox checked={params.sizes && params.sizes.includes(size.name)} onChange={(event) => handleFiltersChange('sizes',size.name, event.target.checked)} />}
+                                            label={size.name}
+                                        />
+                                    ))}
+                                </FormGroup>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xl={1} xs={1} md={1} style={{paddingLeft: 0}}>
+                            <ButtonGroup variant="outlined" color="primary" aria-label="sort">
+                                <Grid container spacing={0}>
+                                    <Grid item xl={6} xs={6} md={6}>
+                                        <Button style={{width: '100%'}} onClick={() => handleSort('')} variant={!params.sort ? 'contained' : 'outlined'}>
+                                            None
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xl={6} xs={6} md={6}>
+                                        <Button style={{width: '100%'}} onClick={() => handleSort('price')} endIcon={params.sort === 'price' && (params.direction === 'asc' ? '🔼' : '🔽')}>
+                                            Price
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xl={6} xs={6} md={6}>
+                                        <Button style={{width: '100%'}} onClick={() => handleSort('discount')} endIcon={params.sort === 'discount' && (params.direction === 'asc' ? '🔼' : '🔽')}>
+                                            Discount
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xl={6} xs={6} md={6}>
+                                        <Button style={{width: '100%'}} onClick={() => handleSort('averageReviewMark')} endIcon={params.sort === 'averageReviewMark' && (params.direction === 'asc' ? '🔼' : '🔽')}>
+                                            Rating
+                                        </Button>
+                                    </Grid>
+                                </Grid>
                             </ButtonGroup>
+                        </Grid>
+                        <Grid container alignItems="center" spacing={1}>
+                            <Grid item xl={2} xs={2} md={2}>
+                                <Typography variant="body1" style={{ textAlign: 'center' }}>Ціна:</Typography>
+                            </Grid>
+                            <Grid item xl={9} xs={9} md={9}>
+                                <Slider
+                                    aria-labelledby="price-slider"
+                                    getAriaValueText={(value) => `₴${value}`}
+                                    valueLabelDisplay="auto"
+                                    valueLabelFormat={(value) => `₴${value}`}
+                                    min={1}
+                                    max={9999}
+                                    value={priceRange}
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </Grid>
-                    <Grid item xs={2}>
-                        <Typography variant="body1" style={{ textAlign: 'right' }}>Price: ₴{priceRange[0]}</Typography>
+
+                <Grid item xl={10} xs={10} md={10} >
+                    <Grid container spacing={0} >
+                        {!products && [...Array(4)].map((_, rowIndex) => (
+                            <div key={rowIndex} style={{ display: 'flex', marginBottom: '20px' }}>
+                                {[...Array(4)].map((_, colIndex) => (
+                                    <div key={colIndex} style={{ marginRight: '20px' }}>
+                                        {renderSkeletons().slice(rowIndex * 4 + colIndex, rowIndex * 4 + colIndex + 1)}
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                        {products && products.map((item, index) => (
+                            <Grid key={index} item xl={4} xs={4} md={4}>
+                                <ProductShortCut product={item}/>
+                            </Grid>
+                        ))}
                     </Grid>
-                    <Grid item xs={4}>
-                        <Slider
-                            getAriaLabel={() => 'Price range'}
-                            value={priceRange}
-                            onChange={handleChange}
-                            valueLabelDisplay="auto"
-                            min={1} // Мінімальне значення
-                            max={9999}
-                        />
-                    </Grid>
-                    <Grid item xs={1}>
-                        <Typography variant="body1">₴{priceRange[1]}</Typography>
-                    </Grid>
+                </Grid>
             </Grid>
-            {!products && [...Array(4)].map((_, rowIndex) => (
-                <div key={rowIndex} style={{ display: 'flex', marginBottom: '20px' }}>
-                    {[...Array(4)].map((_, colIndex) => (
-                        <div key={colIndex} style={{ marginRight: '20px' }}>
-                            {renderSkeletons().slice(rowIndex * 4 + colIndex, rowIndex * 4 + colIndex + 1)}
-                        </div>
-                    ))}
-                </div>
-            ))}
-            <Grid container spacing={2} style={{marginTop: '20px'}}>
-                {products && products.map((item, index) => (
-                    <Grid key={index} item xs={3}>
-                        <ProductShortCut product={item}/>
-                    </Grid>
-                ))}
-            </Grid>
-            <Pagination style={{marginTop: '20px'}}
-                onChange={onPageChange}
-                color={'secondary'}
-                count={pagesCount}
-                size="large"
-                defaultPage={1}
-            />
+
+            <div style={{ marginTop: '20px' }}>
+                <Pagination
+                    onChange={onPageChange}
+                    color={'secondary'}
+                    count={pagesCount}
+                    size="large"
+                    defaultPage={1}
+                />
+            </div>
         </Container>
     );
 }
