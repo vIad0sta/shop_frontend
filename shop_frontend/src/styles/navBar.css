@@ -1,0 +1,14 @@
+#navbar {
+    transition: top 0.3s;
+}
+
+.sticky {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000; /* Adjust z-index as needed */
+}
+
+.sticky + .content {
+    padding-top: 64px; /* Adjust padding-top to avoid content being overlapped by the sticky navbar */
+}

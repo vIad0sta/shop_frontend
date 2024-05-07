@@ -46,6 +46,6 @@ function Profile(props) {
         </TabContext>
 
     );
-};
+}
 
 export default Profile;

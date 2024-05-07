@@ -2,16 +2,21 @@ import React, {useState} from 'react';
 import { AppBar, Toolbar, Typography, Button} from '@mui/material';
 import AuthRequests from "../Requests/AuthRequests";
 import axios from 'axios';
+import CartOverlay from "./CartOverlay";
 
 const NavBar = () => {
     const handleLogout = async () => {
         await AuthRequests.logout()
         window.location.href = '/login'
     }
-    const [signedIn, setSignedIn] = useState(localStorage.getItem('signedIn') === 'true');
+    const [isCartOpen, setIsCartOpen] = useState(false); // State to manage cart visibility
 
+    const [signedIn, setSignedIn] = useState(localStorage.getItem('signedIn') === 'true');
+    const handleCartClick = () => {
+        setIsCartOpen(!isCartOpen);
+    }
     return (
-        <AppBar position="static">
+        <AppBar position="fixed" >
             <Toolbar>
 
                 <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
@@ -77,6 +82,13 @@ c40 0 49 3 49 18 0 9 -23 150 -50 312 -28 162 -50 298 -50 303 0 4 -31 7 -70
                 {!signedIn && <Button onClick={() => window.location.href = '/registration'} color="inherit">Registration</Button>}
                 {signedIn && <Button onClick={() => window.location.href = '/profile'} color="inherit">Profile</Button>}
                 {signedIn && <Button onClick={handleLogout} color="inherit">Logout</Button>}
+                <Button onClick={handleCartClick} style={{ position: 'absolute', right: 40 }}>
+                    <svg fill="#FFFFFF" height="28" viewBox="0 0 16 16" width="28" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#FFFFFF" d="M8 2C7.20097 2 6.48245 2.48647 6.1857 3.22834L5.47703 5H3.32297L4.32874 2.48556C4.92922 0.984369 6.38316 0 8 0C9.61684 0 11.0708 0.984368 11.6713 2.48556L12.677 5H10.523L9.81431 3.22834C9.51755 2.48647 8.79903 2 8 2Z"/>
+                        <path fill="#FFFFFF" d="M15 7H1V9L3 15H13L15 9V7Z"/>
+                    </svg>
+                </Button>
+                <CartOverlay isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
             </Toolbar>
         </AppBar>
     );

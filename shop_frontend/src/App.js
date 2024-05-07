@@ -8,10 +8,26 @@ import Home from "./Components/Home";
 import Profile from "./Components/Profile";
 import ProductPage from "./Components/ProductPage";
 
+import Box from '@mui/material/Box';
+import Backdrop from '@mui/material/Backdrop';
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import PrintIcon from '@mui/icons-material/Print';
+import ShareIcon from '@mui/icons-material/Share';
+
+
+
 function App() {
+
   return (
+      <>
+
       <BrowserRouter>
           <NavBar/>
+          <div style={{paddingTop: 100}}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />}/>
@@ -34,7 +50,10 @@ function App() {
             {/*<Route path="/restore-password" element={<RestorePasswordPage />} />*/}
             {/*<Route path="/restore-password/new-password" element={<CreateNewPasswordPage />} />*/}
           </Routes>
+          </div>
       </BrowserRouter>
+
+      </>
   );
 }
 

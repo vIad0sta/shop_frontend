@@ -1,5 +1,6 @@
-import {useEffect, useState} from "react";
+import React, { useEffect, useState } from 'react';
 import ProductRequests from "../Requests/ProductRequests";
+import { useParams, Link } from "react-router-dom"; // Import Link component
 import {
     Autocomplete,
     Button, ButtonGroup, Checkbox,
@@ -186,7 +187,9 @@ function Home(){
                         ))}
                         {products && products.map((item, index) => (
                             <Grid key={index} item xl={4} xs={4} md={4}>
-                                <ProductShortCut product={item}/>
+                                <Link to={`/product/${item.id}`} style={{ textDecoration: 'none' }}> {/* Wrap ProductShortCut with Link */}
+                                    <ProductShortCut product={item}/>
+                                </Link>
                             </Grid>
                         ))}
                     </Grid>
@@ -207,44 +210,3 @@ function Home(){
 }
 
 export default Home;
-
-{/*<Grid item xs={7} style={{ textAlign: 'center' }}>*/}
-{/*            <ButtonGroup variant="contained" color="primary" aria-label="gender">*/}
-{/*                <Button*/}
-{/*                    onClick={() => handleGenderChange('')}*/}
-{/*                    variant={ !params.gender ? 'contained' : 'outlined'}*/}
-{/*                >*/}
-{/*                    None*/}
-{/*                </Button>*/}
-{/*                <Button*/}
-{/*                    onClick={() => handleGenderChange('MEN')}*/}
-{/*                    variant={ params.gender && params.gender.includes('MEN') ? 'contained' : 'outlined'}*/}
-{/*                >*/}
-{/*                    Men*/}
-{/*                </Button>*/}
-{/*                <Button*/}
-{/*                    onClick={() => handleGenderChange('WOMEN')}*/}
-{/*                    variant={ params.gender && params.gender.includes('WOMEN') ? 'contained' : 'outlined'}*/}
-{/*                >*/}
-{/*                    Women*/}
-{/*                </Button>*/}
-{/*                <Button*/}
-{/*                    onClick={() => handleGenderChange('UNISEX')}*/}
-{/*                    variant={ params.gender && params.gender.includes('UNISEX') ? 'contained' : 'outlined'}*/}
-{/*                >*/}
-{/*                    Unisex*/}
-{/*                </Button>*/}
-{/*                <Button*/}
-{/*                    onClick={() => handleGenderChange('BOYS')}*/}
-{/*                    variant={ params.gender && params.gender.includes('BOYS') ? 'contained' : 'outlined'}*/}
-{/*                >*/}
-{/*                    Boys*/}
-{/*                </Button>*/}
-{/*                <Button*/}
-{/*                    onClick={() => handleGenderChange('GIRLS')}*/}
-{/*                    variant={ params.gender && params.gender.includes('GIRLS') ? 'contained' : 'outlined'}*/}
-{/*                >*/}
-{/*                    Girls*/}
-{/*                </Button>*/}
-{/*            </ButtonGroup>*/}
-{/*</Grid>*/}
