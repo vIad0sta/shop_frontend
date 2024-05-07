@@ -19,7 +19,7 @@ export default class ProductRequests{
     static async getProductReviews(productId){
         return (await axiosInstance.get(`${url}/${productId}/reviews`)).data;
     }
-    static async getProductImages(productId) {
+    static async getProductImagesAmount(productId) {
         return (await axiosInstance.get(`${url}/${productId}/images`)).data;
     }
     static async getProductsImages() {
