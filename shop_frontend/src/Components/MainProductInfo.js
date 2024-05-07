@@ -22,15 +22,11 @@ function MainProductInfo({ product }) {
         return selectedSize !== null;
     };
     const handleAddToCart = async () => {
-        await CartRequests.updateCartItems({
-            id: Number(localStorage.getItem('cartId')),
-            cartItem: {
+        await CartRequests.addCartItem({
                 productId: product.id,
                 clothingSizeId: selectedSize.id,
                 quantity: 1,
                 cartId: Number(localStorage.getItem('cartId'))
-            }
-
         })
     }
     return (

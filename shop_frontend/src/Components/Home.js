@@ -161,9 +161,9 @@ function Home(){
                             <Grid item xl={9} xs={9} md={9}>
                                 <Slider
                                     aria-labelledby="price-slider"
-                                    getAriaValueText={(value) => `₴${value}`}
+                                    getAriaValueText={(value) => `${value}₴`}
                                     valueLabelDisplay="auto"
-                                    valueLabelFormat={(value) => `₴${value}`}
+                                    valueLabelFormat={(value) => `${value}₴`}
                                     min={1}
                                     max={9999}
                                     value={priceRange}

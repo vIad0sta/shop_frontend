@@ -5,8 +5,11 @@ export default class CartRequests{
     static async getCartBySession(){
         return (await axiosInstance.get(url)).data;
     }
-    static async updateCartItems(body){
-        return (await axiosInstance.patch(url, body)).data;
+    static async addCartItem(body){
+        return (await axiosInstance.post(`${url}/${body.cartId}/cartItem`, body)).data;
+    }
+    static async updateCartItem(cartId, body){
+        return (await axiosInstance.patch(`${url}/${cartId}/cartItem`, body)).data;
     }
     static async getCartItems(cartId) {
         return (await axiosInstance.get(`${url}/getCartItems/${cartId}`)).data

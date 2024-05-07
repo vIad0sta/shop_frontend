@@ -14,10 +14,10 @@ function ProductShortCut(props){
                     {props.product.name}
                 </Typography>
                 <Typography variant="body1" color="textSecondary">
-                    Price: {props.product.price.toFixed(2)}
+                    Ціна: {props.product.price - (props.product.price * props.product.discount)}₴
                 </Typography>
                 <Typography variant="body1" color="textSecondary">
-                    Discount: {props.product.discount.toFixed(2)}
+                   Опис: {props.product.description}
                 </Typography>
             </CardContent>
         </Card>
