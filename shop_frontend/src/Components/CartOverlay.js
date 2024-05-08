@@ -17,35 +17,15 @@ import CartRequests from "../Requests/CartRequests";
 import _ from 'lodash';
 import UserRequests from "../Requests/UserRequests";
 
-function CartOverlay({ isOpen, onClose }) {
-    const [cart, setCart] = useState(null);
+function CartOverlay({fetchData,cartItems,setCartItems, isOpen, onClose, cart,setCart }) {
     const [signedIn, setSignedIn] = useState(localStorage.getItem('signedIn') === 'true');
-    const [cartItems, setCartItems] = useState(null);
-    useEffect(() => {
-        fetchData();
-    }, [isOpen]);
-    const fetchData = async () => {
-        if (!isOpen) return;
 
-        const cartResponse = signedIn ?
-            await UserRequests.getCart() :
-            await CartRequests.getCartBySession();
-
-        setCart(cartResponse);
-        const cartItemsResponse = await CartRequests.getCartItems(cartResponse.id);
-        setCartItems(cartItemsResponse);
-        localStorage.setItem('cartId', cartResponse.id);
-    };
     const debouncedHandleQuantityChange = _.debounce(async (quantity, cartItem) => {
         await CartRequests.updateCartItem(cartItem.cartId, {
             id: cartItem.id,
             quantity: Number(quantity),
         });
-        const cartResponse = signedIn ?
-            await UserRequests.getCart() :
-            await CartRequests.getCartBySession();
-
-        setCart(cartResponse);
+        fetchData()
         }, 700);
     const handleQuantityChange = (quantity, cartItem) => {
         debouncedHandleQuantityChange(quantity, cartItem);
@@ -53,7 +33,7 @@ function CartOverlay({ isOpen, onClose }) {
     const handleClearCart = async () => {
         await CartRequests.clearCart(cart.id)
         setCartItems(null)
-        fetchData();
+        fetchData()
     };
     const handleDeleteItem = async (cartItemId) => {
         await CartRequests.deleteCartItem(cartItemId)

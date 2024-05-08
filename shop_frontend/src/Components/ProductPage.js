@@ -26,6 +26,8 @@ import MainProductInfo from "./MainProductInfo";
 import ProductDescription from "./ProductDescription";
 import ProductReviews from "./ProductReviews";
 import ReviewRequests from "../Requests/ReviewRequests";
+import CartRequests from "../Requests/CartRequests";
+import UserRequests from "../Requests/UserRequests";
 
 function SampleNextArrow(props) {
     const { className, style, onClick } = props;
@@ -78,7 +80,7 @@ function SamplePrevArrow(props) {
         />
     );
 }
-function ProductPage(props) {
+function ProductPage({cart,setCart,fetchCart}) {
 
     const [product, setProduct] = useState(null);
     const [imageCounter, setImageCounter] = useState(); // State to keep track of the current image counter
@@ -86,7 +88,7 @@ function ProductPage(props) {
     const url = 'https://localhost:8080/images';
     const [value, setValue] = useState('1')
     const [reviews, setReviews] = useState()
-
+    const [signedIn,setSignedIn] = useState(localStorage.getItem('signedIn') === 'true')
     useEffect(() => {
         fetchData();
     }, []);
@@ -146,7 +148,7 @@ function ProductPage(props) {
                                 <Tab label="Reviews" value="3" />
                             </TabList>
                         </Box>
-                        <TabPanel value="1"><MainProductInfo product={product} /></TabPanel>
+                        <TabPanel value="1"><MainProductInfo product={product} cart={cart} setCart={setCart} fetchData={fetchCart}/></TabPanel>
                         <TabPanel value="2"><ProductDescription /></TabPanel>
                         <TabPanel value="3"><ProductReviews reviews={reviews} setReviews={setReviews}/></TabPanel>
                     </TabContext>

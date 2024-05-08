@@ -11,11 +11,11 @@ export default class CartRequests{
     static async updateCartItem(cartId, body){
         return (await axiosInstance.patch(`${url}/${cartId}/cartItem`, body)).data;
     }
-    static async getCartItems(cartId) {
-        return (await axiosInstance.get(`${url}/getCartItems/${cartId}`)).data
+    static async getCartProducts(cartId) {
+        return (await axiosInstance.get(`${url}/getCartProducts/${cartId}`)).data
     }
     static async deleteCartItem(cartItemId){
-        return (await axiosInstance.delete(`${url}/cartItem/delete/${cartItemId}`)).data;
+        return (await axiosInstance.delete(`${url}/cartItem/${cartItemId}`)).data;
     }
     static async clearCart(cartId){
         return (await axiosInstance.delete(`${url}/${cartId}`)).data;

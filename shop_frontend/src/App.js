@@ -1,5 +1,5 @@
 import './App.css';
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Registration from "./Components/Registration";
 import Login from "./Components/Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -17,23 +17,43 @@ import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import PrintIcon from '@mui/icons-material/Print';
 import ShareIcon from '@mui/icons-material/Share';
+import UserRequests from "./Requests/UserRequests";
+import CartRequests from "./Requests/CartRequests";
 
 
 
 function App() {
 
-  return (
+    const [cart,setCart] = useState()
+    const [cartItems, setCartItems] = useState(null);
+    const [signedIn, setSignedIn] = useState(localStorage.getItem('signedIn') === 'true');
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+    const fetchData = async () => {
+        const cartResponse = signedIn ?
+            await UserRequests.getCart() :
+            await CartRequests.getCartBySession();
+
+        setCart(cartResponse);
+        const cartItemsResponse = await CartRequests.getCartProducts(cartResponse.id);
+        setCartItems(cartItemsResponse);
+        localStorage.setItem('cartId', cartResponse.id);
+    };
+
+    return (
       <>
 
       <BrowserRouter>
-          <NavBar/>
+          <NavBar cart={cart} setCart={setCart} fetchData={fetchData} cartItems={cartItems} setCartItems={setCartItems}/>
           <div style={{paddingTop: 100}}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />}/>
             <Route path="/registration" element={<Registration />}/>
               <Route path="/profile" element={<Profile />} />
-              <Route path="/product/:id" element={<ProductPage />} />
+              <Route path="/product/:id" element={<ProductPage cart={cart} setCart={setCart} fetchCart={fetchData}/>} />
 
 
 

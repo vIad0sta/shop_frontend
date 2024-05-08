@@ -4,12 +4,12 @@ import AuthRequests from "../Requests/AuthRequests";
 import axios from 'axios';
 import CartOverlay from "./CartOverlay";
 
-const NavBar = () => {
+const NavBar = ({cart,setCart,fetchData,cartItems, setCartItems}) => {
     const handleLogout = async () => {
         await AuthRequests.logout()
         window.location.href = '/login'
     }
-    const [isCartOpen, setIsCartOpen] = useState(false); // State to manage cart visibility
+    const [isCartOpen, setIsCartOpen] = useState(false);
 
     const [signedIn, setSignedIn] = useState(localStorage.getItem('signedIn') === 'true');
     const handleCartClick = () => {
@@ -73,8 +73,10 @@ c22 38 25 55 25 138 -1 160 -33 190 -204 190 l-101 0 0 -320z m198 208 c7 -7
 c40 0 49 3 49 18 0 9 -23 150 -50 312 -28 162 -50 298 -50 303 0 4 -31 7 -70
 7 -39 0 -70 -4 -70 -10z m88 -259 c17 -130 17 -131 -18 -131 -24 0 -30 4 -30
 21 0 42 24 199 30 199 4 0 12 -40 18 -89z"/>
+
                     </g>
                 </svg>
+
 
 
                 <Button onClick={() => window.location.href = '/'} color="inherit">Home</Button>
@@ -86,9 +88,11 @@ c40 0 49 3 49 18 0 9 -23 150 -50 312 -28 162 -50 298 -50 303 0 4 -31 7 -70
                     <svg fill="#FFFFFF" height="28" viewBox="0 0 16 16" width="28" xmlns="http://www.w3.org/2000/svg">
                         <path fill="#FFFFFF" d="M8 2C7.20097 2 6.48245 2.48647 6.1857 3.22834L5.47703 5H3.32297L4.32874 2.48556C4.92922 0.984369 6.38316 0 8 0C9.61684 0 11.0708 0.984368 11.6713 2.48556L12.677 5H10.523L9.81431 3.22834C9.51755 2.48647 8.79903 2 8 2Z"/>
                         <path fill="#FFFFFF" d="M15 7H1V9L3 15H13L15 9V7Z"/>
+                        {(cartItems && cartItems.length > 0) && <text x="50%" y="75%" dominant-baseline="middle" text-anchor="middle" fill="black" fontWeight={'bold'} font-size="8">{cartItems.length}</text>}
+
                     </svg>
                 </Button>
-                <CartOverlay isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+                <CartOverlay fetchData={fetchData} cartItems={cartItems} setCartItems={setCartItems} cart={cart} setCart={setCart} isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
             </Toolbar>
         </AppBar>
     );

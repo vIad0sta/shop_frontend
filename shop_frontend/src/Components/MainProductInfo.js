@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CardContent, Chip, Grid, Rating, Typography, Button } from "@mui/material";
 import CartRequests from "../Requests/CartRequests";
 import ProductRequests from "../Requests/ProductRequests";
+import UserRequests from "../Requests/UserRequests";
 
-function MainProductInfo({ product }) {
+function MainProductInfo({ product,cart,setCart,fetchData}) {
     const [selectedSize, setSelectedSize] = useState(null);
+    const [signedIn,setSignedIn] = useState(localStorage.getItem('signedIn') === 'true')
 
     const calculateDiscountedPrice = () => {
         if (product && product.discount > 0) {
@@ -21,14 +23,33 @@ function MainProductInfo({ product }) {
     const isSizeSelected = () => {
         return selectedSize !== null;
     };
+
+    const isSizeInCart = () => {
+        if(!cart || !selectedSize)
+            return
+        return cart.cartItems.some(item =>
+            item.productId === product.id &&
+            item.clothingSizeId === selectedSize.id
+        );
+    };
+
+
     const handleAddToCart = async () => {
         await CartRequests.addCartItem({
-                productId: product.id,
-                clothingSizeId: selectedSize.id,
-                quantity: 1,
-                cartId: Number(localStorage.getItem('cartId'))
-        })
-    }
+            productId: product.id,
+            clothingSizeId: selectedSize.id,
+            quantity: 1,
+            cartId: Number(localStorage.getItem('cartId'))
+        });
+        fetchData()
+    };
+
+    const handleRemoveFromCart = async () => {
+        let cartItemId = cart.cartItems.find(item => (item.clothingSizeId === selectedSize.id && item.productId === product.id)).id
+        await CartRequests.deleteCartItem(cartItemId)
+        fetchData()
+    };
+
     return (
         <Grid container spacing={2}>
             {/* Main Product Information */}
@@ -42,7 +63,6 @@ function MainProductInfo({ product }) {
                         readOnly
                     />
                     <Typography variant="body1" color="textSecondary">Article: {product.article}</Typography>
-
                     <Typography variant="body1" color="textSecondary">Category: {product.category.label}</Typography>
                     <Typography variant="body1" color="textSecondary">Gender: {product.gender}</Typography>
                 </CardContent>
@@ -79,12 +99,12 @@ function MainProductInfo({ product }) {
                     </Grid>
                     <Button
                         variant="contained"
-                        color="primary"
-                        onClick={handleAddToCart}
+                        color={isSizeInCart() ? "secondary" : "primary"}
+                        onClick={isSizeInCart() ? handleRemoveFromCart : handleAddToCart}
                         style={{ marginTop: '20px' }}
                         disabled={!isSizeSelected()}
                     >
-                        Add to Cart
+                        {isSizeInCart() ? "Remove from Cart" : "Add to Cart"}
                     </Button>
                 </CardContent>
             </Grid>
