@@ -14,8 +14,8 @@ export default class CartRequests{
     static async getCartItems(cartId) {
         return (await axiosInstance.get(`${url}/getCartItems/${cartId}`)).data
     }
-    static async deleteCartItem(cartId, productId, clothingSizeId){
-        return (await axiosInstance.delete(`${url}/${cartId}/cartItem/${productId}/size/${clothingSizeId}`)).data;
+    static async deleteCartItem(cartItemId){
+        return (await axiosInstance.delete(`${url}/cartItem/delete/${cartItemId}`)).data;
     }
     static async clearCart(cartId){
         return (await axiosInstance.delete(`${url}/${cartId}`)).data;
