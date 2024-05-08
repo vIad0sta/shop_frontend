@@ -8,6 +8,9 @@ export default class OrderRequests{
     static async getOrder(orderId){
         return (await axiosInstance.get(`${url}/${orderId}`)).data;
     }
+    static async getOrderItems(orderId){
+        return (await axiosInstance.get(`${url}/${orderId}/orderItems`)).data;
+    }
     static async getOrdersBySession(){
         return (await axiosInstance.get(`${url}/session`)).data;
     }

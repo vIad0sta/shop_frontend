@@ -41,8 +41,12 @@ function CartOverlay({ isOpen, onClose }) {
             id: cartItem.id,
             quantity: Number(quantity),
         });
-        fetchData();
-    }, 700);
+        const cartResponse = signedIn ?
+            await UserRequests.getCart() :
+            await CartRequests.getCartBySession();
+
+        setCart(cartResponse);
+        }, 700);
     const handleQuantityChange = (quantity, cartItem) => {
         debouncedHandleQuantityChange(quantity, cartItem);
     };

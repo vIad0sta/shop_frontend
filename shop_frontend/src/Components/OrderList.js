@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { Grid, Typography, Paper, CardContent } from '@mui/material';
 import ProductRequests from "../Requests/ProductRequests";
+import OrderRequests from "../Requests/OrderRequests";
 
 function OrderList({ currentOrder }) {
     const [products,setProducts] = useState()
@@ -9,8 +10,7 @@ function OrderList({ currentOrder }) {
         fetchData();
     }, []);
     const fetchData = async () => {
-        const orderItemIds = currentOrder.orderItems.map(item => item.productId);
-        const productsResponse = await ProductRequests.getProductsByIdArray(orderItemIds);
+        const productsResponse = await OrderRequests.getOrderItems(currentOrder.id);
         setProducts(productsResponse);
     }
 

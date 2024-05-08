@@ -34,7 +34,7 @@ function Home(){
     const [sizes, setSizes] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [pagesCount, setPagesCount] = useState(1);
-    const [params, setParams] = useState({size: 16});
+    const [params, setParams] = useState({size: 12});
     const [priceRange, setPriceRange] = useState([20, 37]);
 
     useEffect(() => {
@@ -51,11 +51,9 @@ function Home(){
         fetchProducts();
     }, [params]);
     const fetchProducts = async () => {
-        console.log(params)
         const productsData = await ProductRequests.getAllProducts(params);
-        setProducts(productsData);
-        const pagesData = await ProductRequests.getProductsPages(params);
-        setPagesCount(pagesData);
+        setProducts(productsData.products);
+        setPagesCount(productsData.pages);
     }
     const onPageChange = (event, value) => {
         event.preventDefault()
