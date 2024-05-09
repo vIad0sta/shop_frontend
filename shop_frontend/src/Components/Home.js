@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import CategoryRequests from "../Requests/CategoryRequests";
 import ProductShortCut from "./ProductShortCut";
+import BuyOverlay from "./BuyOverlay";
 
 const paginationStyles = css`
       .MuiPaginationItem-root {
@@ -28,7 +29,7 @@ const paginationStyles = css`
       }
     `;
 
-function Home(){
+function Home({cart,setCart,fetchCart}){
     const [products, setProducts] = useState(null);
     const [categories, setCategories] = useState(null);
     const [sizes, setSizes] = useState(null);
@@ -36,7 +37,8 @@ function Home(){
     const [pagesCount, setPagesCount] = useState(1);
     const [params, setParams] = useState({size: 12});
     const [priceRange, setPriceRange] = useState([20, 37]);
-
+    const [isOverlayOpen, setIsOverlayOpen] = useState(false)
+    const [selectedProduct,setSelectedProduct] = useState()
     useEffect(() => {
         fetchData();
     }, []);
@@ -93,6 +95,13 @@ function Home(){
         setPriceRange(newValue);
         setParams({...params, minPrice: newValue[0], maxPrice: newValue[1]})
     };
+    const onOverlayClose = () => {
+        setIsOverlayOpen(false)
+    }
+    const onOverlayOpen = (product) => {
+        setIsOverlayOpen(true)
+        setSelectedProduct(product)
+    }
     return (
         <Container maxWidth="xl" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh',  minWidth: '100%', marginTop: '40px'}}>
             <Grid container textAlign={'left'} spacing={5} style={{minWidth: "100%"}}>
@@ -186,7 +195,7 @@ function Home(){
                         {products && products.map((item, index) => (
                             <Grid key={index} item xl={4} xs={4} md={4}>
                                 <Link to={`/product/${item.id}`} style={{ textDecoration: 'none' }}> {/* Wrap ProductShortCut with Link */}
-                                    <ProductShortCut product={item}/>
+                                    <ProductShortCut product={item} onOverlayOpen={onOverlayOpen}/>
                                 </Link>
                             </Grid>
                         ))}
@@ -203,6 +212,7 @@ function Home(){
                     defaultPage={1}
                 />
             </div>
+            <BuyOverlay fetchData={fetchCart} cart={cart} setCart={setCart} product={selectedProduct} open={isOverlayOpen} handleClose={onOverlayClose}/>
         </Container>
     );
 }

@@ -49,7 +49,7 @@ function App() {
           <NavBar cart={cart} setCart={setCart} fetchData={fetchData} cartItems={cartItems} setCartItems={setCartItems}/>
           <div style={{paddingTop: 100}}>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home cart={cart} setCart={setCart} fetchCart={fetchData}/>} />
             <Route path="/login" element={<Login />}/>
             <Route path="/registration" element={<Registration />}/>
               <Route path="/profile" element={<Profile />} />
