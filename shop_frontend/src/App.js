@@ -19,6 +19,7 @@ import PrintIcon from '@mui/icons-material/Print';
 import ShareIcon from '@mui/icons-material/Share';
 import UserRequests from "./Requests/UserRequests";
 import CartRequests from "./Requests/CartRequests";
+import ViewCartPage from "./Components/ViewCartPage";
 
 
 
@@ -54,7 +55,8 @@ function App() {
             <Route path="/registration" element={<Registration />}/>
               <Route path="/profile" element={<Profile />} />
               <Route path="/product/:id" element={<ProductPage cart={cart} setCart={setCart} fetchCart={fetchData}/>} />
-
+              <Route path="/view-cart-page" element={<ViewCartPage cart={cart} setCart={setCart} fetchData={fetchData}/>}/>
+              <Route path="/view-cart-page/:id" element={<ViewCartPage cart={cart} setCart={setCart} fetchData={fetchData}/>}/>
 
 
 
@@ -65,7 +67,7 @@ function App() {
             {/*<Route path="/companies/:companyId/event-creator" element={<EventCreator />} />*/}
             {/*<Route path="/companies/:companyId" element={<CompanyPage />} />*/}
             {/*<Route path="/users/:userId/company-creator" element={<CompanyCreator />} />*/}
-            {/*<Route path="/payments/confirmation/:cartId" cart={cart} cartTickets={tickets} setCart={setCart} setTickets={setTickets} element={<ConfirmationPage />} />*/}
+            {/*<Route path="/payments/confirmation/:cartId" cart={cart} cartTickets={tickets} setCart={setCart} setTickets={setTickets} element={<ViewCartPage />} />*/}
             {/*<Route path="/payments/buy-ticket/:cartId" element={<PaymentPage />} />*/}
             {/*<Route path="/restore-password" element={<RestorePasswordPage />} />*/}
             {/*<Route path="/restore-password/new-password" element={<CreateNewPasswordPage />} />*/}

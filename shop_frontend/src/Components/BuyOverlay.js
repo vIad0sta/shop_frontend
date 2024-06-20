@@ -44,6 +44,10 @@ function BuyOverlay(props) {
     if (!props.product) {
         return null; // Don't render anything if product is null
     }
+    const handleCloseOverlay = () => {
+        setSelectedSize(null)
+        props.handleClose()
+    }
 
     return (
         <Modal
@@ -53,7 +57,7 @@ function BuyOverlay(props) {
                 justifyContent: 'center',
             }}
             open={props.open}
-            onClose={props.handleClose}
+            onClose={handleCloseOverlay}
             closeAfterTransition
         >
             <Fade in={props.open}>

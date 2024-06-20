@@ -19,7 +19,6 @@ import UserRequests from "../Requests/UserRequests";
 
 function CartOverlay({fetchData,cartItems,setCartItems, isOpen, onClose, cart,setCart }) {
     const [signedIn, setSignedIn] = useState(localStorage.getItem('signedIn') === 'true');
-
     const debouncedHandleQuantityChange = _.debounce(async (quantity, cartItem) => {
         await CartRequests.updateCartItem(cartItem.cartId, {
             id: cartItem.id,
@@ -39,11 +38,14 @@ function CartOverlay({fetchData,cartItems,setCartItems, isOpen, onClose, cart,se
         await CartRequests.deleteCartItem(cartItemId)
         fetchData();
     };
+    const handleOrderOneItem = async (cartItemId) => {
+        window.location.href = `/view-cart-page/${cartItemId}`
+    };
     return (
         <Drawer anchor="right"  open={isOpen} onClose={onClose} sx={{ minWidth: 300 }}>
             <List>
-                <Button style={{ width: '100%' }} onClick={onClose}>
-                    <ListItemText primary="Close" />
+                <Button startIcon={<ClearIcon />} style={{ width: '100%' }} onClick={onClose}>
+                    {/*<ListItemText primary="Close" />*/}
                 </Button>
                 {(cart && cartItems) && cartItems.map((item, index) => (
                     cart.cartItems[index] ? (
@@ -56,7 +58,7 @@ function CartOverlay({fetchData,cartItems,setCartItems, isOpen, onClose, cart,se
                             />
                             <CardContent>
                                 <Typography variant="body1">{item.name}</Typography>
-                                <Typography variant="body2">{item.price * cart.cartItems[index].quantity}₴</Typography>
+                                <Typography style={{fontSize: 18}} variant="body2" color="primary">{item.price * cart.cartItems[index].quantity}₴</Typography>
                                 <TextField
                                     type={'number'}
                                     variant={'standard'}
@@ -75,26 +77,32 @@ function CartOverlay({fetchData,cartItems,setCartItems, isOpen, onClose, cart,se
                                     onClick={() => handleDeleteItem(cart.cartItems[index].id)}
                                     startIcon={<DeleteIcon/>}
                                 />
+                                <Button
+                                    color="primary"
+                                    onClick={() => handleOrderOneItem(cart.cartItems[index].id)}
+                                >
+                                    Замовити окремо
+                                </Button>
                             </CardContent>
                         </Card>
                     ) : null
                 ))}
             </List>
-            <div style={{ marginTop: "auto", }}>
-                {cart && <Typography textAlign={'center'} variant="h4">Сума</Typography>}
-                {cart && <Typography textAlign={'center'} variant="h4">{cart.fullPrice}₴</Typography>}
-            </div>
-            <hr style={{ color: "black", width: '99%' }} />
+            {/*<div style={{ marginTop: "auto", }}>*/}
+            {/*    {cart && <Typography textAlign={'center'} variant="h4">Сума</Typography>}*/}
+            {/*    {cart && <Typography textAlign={'center'} variant="h4">{cart.fullPrice}₴</Typography>}*/}
+            {/*</div>*/}
+            {/*<hr style={{ color: "black", width: '99%' }} />*/}
             {(cart && cartItems && cartItems.length > 0) &&
                 <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
                     <Button startIcon={<ClearIcon />} variant="outlined" onClick={handleClearCart}>
-                        Clear Cart
+                        Видалити все
                     </Button>
                 </div>
             }
             {(cart && cartItems && cartItems.length > 0) &&
                 <div style={{ width: '100%', height: "100px", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Button style={{ width: '60%', height: "40px" }} variant={'contained'} onClick={() => window.location.href = `/carts/${cart.id}`}>Оглянути</Button>
+                    <Button style={{ width: '60%', height: "40px" }} variant={'contained'} onClick={() => window.location.href =  `/view-cart-page/`}>Оглянути</Button>
                 </div>
             }
         </Drawer>

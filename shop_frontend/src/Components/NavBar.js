@@ -16,7 +16,7 @@ const NavBar = ({cart,setCart,fetchData,cartItems, setCartItems}) => {
         setIsCartOpen(!isCartOpen);
     }
     return (
-        <AppBar position="fixed" >
+        <AppBar position="fixed" style={{height: '100px'}} >
             <Toolbar>
 
                 <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
