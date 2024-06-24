@@ -56,7 +56,7 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/product/:id" element={<ProductPage cart={cart} setCart={setCart} fetchCart={fetchData}/>} />
               <Route path="/view-cart-page" element={<ViewCartPage cart={cart} setCart={setCart} fetchData={fetchData}/>}/>
-              <Route path="/view-cart-page/:id" element={<ViewCartPage cart={cart} setCart={setCart} fetchData={fetchData}/>}/>
+              <Route path="/view-cart-page/:idArray" element={<ViewCartPage cart={cart} setCart={setCart} fetchData={fetchData}/>}/>
 
 
 

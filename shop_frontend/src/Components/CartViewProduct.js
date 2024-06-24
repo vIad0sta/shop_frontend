@@ -2,7 +2,7 @@ import React from 'react';
 import {Card, CardContent, CardMedia, IconButton, TextField, Typography} from "@mui/material";
 import {Delete} from "@mui/icons-material";
 
-function CartViewProduct({product,cart,handleRemoveProduct,handleQuantityChange}) {
+function CartViewProduct({product,cart,handleRemoveProduct,handleQuantityChange,quantity,size,cartItemId}) {
     return (
         <>
             {product &&
@@ -24,17 +24,17 @@ function CartViewProduct({product,cart,handleRemoveProduct,handleQuantityChange}
                         </div>
                         <div>
                             <Typography variant="body2" color="text.secondary">
-                                Quantity: {cart.cartItems.find(item => item.productId === product.id)?.quantity || 0}
+                                Quantity: {quantity}
                             </Typography>
                             <TextField
                                 type="number"
                                 variant="outlined"
                                 size="small"
-                                defaultValue={cart.cartItems.find(item => item.productId === product.id)?.quantity || 0}
+                                defaultValue={quantity}
                                 inputProps={{ min: 1, max: 15 }}
-                                onChange={(e) => handleQuantityChange(e.target.value, product.id)}
+                                onChange={(e) => handleQuantityChange(e.target.value, cartItemId)}
                             />
-                            <IconButton aria-label="remove" size="big" onClick={() => handleRemoveProduct(product.id)}>
+                            <IconButton aria-label="remove" size="big" onClick={() => handleRemoveProduct(cartItemId)}>
                                 <Delete />
                             </IconButton>
                         </div>

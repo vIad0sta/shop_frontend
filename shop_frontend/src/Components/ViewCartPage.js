@@ -10,14 +10,24 @@ function ViewCartPage({ cart, setCart, fetchData }) {
     const [productsFromCart, setProductsFromCart] = useState([]);
     const [promoCode, setPromoCode] = useState('');
     const [totalPrice, setTotalPrice] = useState(0);
-    const { id } = useParams();
-    const [oneProduct, setOneProduct] = useState(null)
+    const { idArray } = useParams();
+    const [selectedCartItems, setSelectedCartItems] = useState([])
 
     useEffect(() => {
-        if(!cart || !cart.cartItems)
-            return
-        if(id) setOneProduct(cart.cartItems.find(product => product.id == id))
+        let ids
+        if(!cart || !cart.cartItems) return
+
         fetchProductsFromCart();
+
+        if (idArray && selectedCartItems.length === 0) {
+            const ids = idArray.split(',');
+            ids.map(id => {
+                setSelectedCartItems(prevItems => [
+                    ...prevItems,
+                    cart.cartItems.find(product => product.id == id)
+                ]);
+            });
+        }
     }, [cart]);
 
     useEffect(() => {
@@ -31,34 +41,53 @@ function ViewCartPage({ cart, setCart, fetchData }) {
         setProductsFromCart(response);
     };
 
-    const handleRemoveProduct = async (productId) => {
-        if(!productId) return
-        await CartRequests.deleteCartItem(cart.cartItems.find(item => item.productId === productId).id);
+    const handleRemoveProduct = async (cartItemId) => {
+        if(!cartItemId) return
+        await CartRequests.deleteCartItem(cartItemId);
+        if (selectedCartItems) {
+            const updatedSelectedCartItems = selectedCartItems.filter(item => item.id !== cartItemId);
+            setSelectedCartItems(updatedSelectedCartItems);
+        }
         fetchData();
     };
 
-    const debouncedHandleQuantityChange = _.debounce(async (quantity, productId) => {
+    const debouncedHandleQuantityChange = _.debounce(async (quantity, cartItemId) => {
         // Ensure quantity is within range of 1 to 15
         quantity = Math.max(1, Math.min(15, quantity));
-        const cartItem = cart.cartItems.find(item => item.productId === productId);
+        const cartItem = cart.cartItems.find(item => item.id === cartItemId);
         await CartRequests.updateCartItem(cartItem.cartId, {
             id: cartItem.id,
             quantity: Number(quantity),
         });
+        const updatedItems = selectedCartItems.map(item =>
+            item.id === cartItemId ? { ...item, quantity: quantity } : item
+        );
+        setSelectedCartItems(updatedItems)
+
         fetchData();
     }, 700);
 
-    const handleQuantityChange = (quantity, productId) => {
-        debouncedHandleQuantityChange(quantity, productId);
+    const handleQuantityChange = (quantity, cartItemId) => {
+        debouncedHandleQuantityChange(quantity, cartItemId);
     };
 
     const calculateTotalPrice = () => {
-        let total = 0;
-        productsFromCart.forEach(product => {
-            total += product.price * cart.cartItems.find(item => item.productId === product.id).quantity;
-        });
+        if (!cart || !cart.cartItems) return;
+
+        const getTotal = (items) => {
+            return items.reduce((total, item) => {
+                if (!item) return total; // Ensure item is defined
+                const product = productsFromCart.find(cartProduct => cartProduct.id === item.productId);
+                return total + (item.quantity * (product ? product.price : 0));
+            }, 0);
+        };
+
+        let total = idArray ? getTotal(selectedCartItems) : getTotal(cart.cartItems);
+
         setTotalPrice(total);
     };
+
+
 
     const handleMakeOrder = () => {
         // Logic to make order
@@ -73,48 +102,27 @@ function ViewCartPage({ cart, setCart, fetchData }) {
 
             <Grid  item xs={12} sm={8} md={6} sx={{margin: 'auto auto'}}  >
                 <Paper elevation={3}>
-                    {(cart && cart.cartItems && productsFromCart && !oneProduct) && productsFromCart.map((product) => (
-                        // <Card sx={{ marginBottom: '20px' }}>
-                        //     <CardMedia
-                        //         component="img"
-                        //         height="200"
-                        //         image={`https://localhost:8080/images/${product.id}/${product.id}_1.png`} // Assuming image paths are structured
-                        //         alt={product.name}
-                        //     />
-                        //     <CardContent sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                        //         <div>
-                        //             <Typography gutterBottom variant="h5" component="div">
-                        //                 {product.name}
-                        //             </Typography>
-                        //             <Typography variant="body2" color="primary" sx={{ fontSize: '1.1rem' }}>
-                        //                 Price: ${product.price}
-                        //             </Typography>
-                        //         </div>
-                        //         <div>
-                        //             <Typography variant="body2" color="text.secondary">
-                        //                 Quantity: {cart.cartItems.find(item => item.productId === product.id)?.quantity || 0}
-                        //             </Typography>
-                        //             <TextField
-                        //                 type="number"
-                        //                 variant="outlined"
-                        //                 size="small"
-                        //                 defaultValue={cart.cartItems.find(item => item.productId === product.id)?.quantity || 0}
-                        //                 inputProps={{ min: 1, max: 15 }}
-                        //                 onChange={(e) => handleQuantityChange(e.target.value, product.id)}
-                        //             />
-                        //             <IconButton aria-label="remove" size="big" onClick={() => handleRemoveProduct(product.id)}>
-                        //                 <Delete />
-                        //             </IconButton>
-                        //         </div>
-                        //     </CardContent>
-                        // </Card>
-                        <CartViewProduct product={product} cart={cart} handleRemoveProduct={handleRemoveProduct} handleQuantityChange={handleQuantityChange}/>
-                    ))}
-                    {oneProduct &&
-                        <CartViewProduct product={productsFromCart.find(productFromCart => productFromCart.id === oneProduct.productId)} cart={cart} handleRemoveProduct={handleRemoveProduct} handleQuantityChange={handleQuantityChange}/>
-                    }
+                    {(cart?.cartItems && productsFromCart) &&
+                        (!idArray ? cart.cartItems : selectedCartItems).map((item) => {
+                            if (!item) return null; // Check if item is undefined
+                            const product = productsFromCart.find(productFromCart => productFromCart.id === item.productId);
+                            if (!product) return null; // Check if product is undefined
 
+                            return (
+                                <CartViewProduct
+                                    key={item.productId}
+                                    product={product}
+                                    cart={cart}
+                                    handleRemoveProduct={handleRemoveProduct}
+                                    handleQuantityChange={handleQuantityChange}
+                                    quantity={item.quantity}
+                                    size={item.size}
+                                    cartItemId={item.id}
+                                />
+                            );
+                        })}
                 </Paper>
+
             </Grid>
             <Box
                 sx={{
