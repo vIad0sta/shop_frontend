@@ -19,15 +19,16 @@ import Box from "@mui/material/Box";
 import TabList from "@mui/lab/TabList";
 import Tab from "@mui/material/Tab";
 import TabPanel from "@mui/lab/TabPanel";
-import ProfileInfo from "./ProfileInfo";
-import ProfileOrders from "./ProfileOrders";
+import ProfileInfo from "../Components/ProfileInfo";
+import ProfileOrders from "../Components/ProfileOrders";
 import TabContext from "@mui/lab/TabContext";
-import MainProductInfo from "./MainProductInfo";
-import ProductDescription from "./ProductDescription";
-import ProductReviews from "./ProductReviews";
+import MainProductInfo from "../Components/MainProductInfo";
+import ProductDescription from "../Components/ProductDescription";
+import ProductReviews from "../Components/ProductReviews";
 import ReviewRequests from "../Requests/ReviewRequests";
 import CartRequests from "../Requests/CartRequests";
-import UserRequests from "../Requests/UserRequests";
+import RegisteredUserRequests from "../Requests/RegisteredUserRequests";
+import {useCart} from "../Contexts/CartContext";
 
 function SampleNextArrow(props) {
     const { className, style, onClick } = props;
@@ -80,15 +81,14 @@ function SamplePrevArrow(props) {
         />
     );
 }
-function ProductPage({cart,setCart,fetchCart}) {
+function ProductPage() {
 
     const [product, setProduct] = useState(null);
-    const [imageCounter, setImageCounter] = useState(); // State to keep track of the current image counter
+    const [imageCounter, setImageCounter] = useState(null);
     const { id } = useParams();
     const url = 'https://localhost:8080/images';
     const [value, setValue] = useState('1')
     const [reviews, setReviews] = useState()
-    const [signedIn,setSignedIn] = useState(localStorage.getItem('signedIn') === 'true')
     useEffect(() => {
         fetchData();
     }, []);
@@ -100,10 +100,13 @@ function ProductPage({cart,setCart,fetchCart}) {
         try {
             const productResponse = await ProductRequests.getProduct(id);
             setProduct(productResponse);
+
             const imagesResponse = await ProductRequests.getProductImagesAmount(id);
             setImageCounter(new Array(imagesResponse).fill(null).map((_, index) => index + 1));
+
             const reviewResponse = await ProductRequests.getProductReviews(id)
-            setReviews(reviewResponse)
+            setReviews(reviewResponse);
+
         } catch (error) {
             console.error("Error fetching product:", error);
         }
@@ -135,7 +138,7 @@ function ProductPage({cart,setCart,fetchCart}) {
                                     component="img"
                                     alt={`Product Image ${index}`}
                                     image={`${url}/${id}/${id}_${index}.png`}
-                                    style={{ width: '100%', height: '70vh' }} // Set image width to 100% and height to auto
+                                    style={{ width: '100%', height: '70vh' }}
                                 />
                             </div>
                         ))}
@@ -148,7 +151,7 @@ function ProductPage({cart,setCart,fetchCart}) {
                                 <Tab label="Reviews" value="3" />
                             </TabList>
                         </Box>
-                        <TabPanel value="1"><MainProductInfo product={product} cart={cart} setCart={setCart} fetchData={fetchCart}/></TabPanel>
+                        <TabPanel value="1"><MainProductInfo product={product}/></TabPanel>
                         <TabPanel value="2"><ProductDescription /></TabPanel>
                         <TabPanel value="3"><ProductReviews reviews={reviews} setReviews={setReviews}/></TabPanel>
                     </TabContext>

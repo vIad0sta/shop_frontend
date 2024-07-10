@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { CardContent, Chip, Grid, Rating, Typography, Button } from "@mui/material";
 import CartRequests from "../Requests/CartRequests";
 import ProductRequests from "../Requests/ProductRequests";
-import UserRequests from "../Requests/UserRequests";
+import RegisteredUserRequests from "../Requests/RegisteredUserRequests";
+import {useCart} from "../Contexts/CartContext";
 
-function MainProductInfo({ product,cart,setCart,fetchData}) {
+function MainProductInfo({product}) {
     const [selectedSize, setSelectedSize] = useState(null);
-    const [signedIn,setSignedIn] = useState(localStorage.getItem('signedIn') === 'true')
+    const { cart, fetchCart} = useCart();
 
     const calculateDiscountedPrice = () => {
         if (product && product.discount > 0) {
@@ -39,20 +40,19 @@ function MainProductInfo({ product,cart,setCart,fetchData}) {
             productId: product.id,
             clothingSizeId: selectedSize.id,
             quantity: 1,
-            cartId: Number(localStorage.getItem('cartId'))
+            cartId: cart.id
         });
-        fetchData()
+        fetchCart()
     };
 
     const handleRemoveFromCart = async () => {
         let cartItemId = cart.cartItems.find(item => (item.clothingSizeId === selectedSize.id && item.productId === product.id)).id
         await CartRequests.deleteCartItem(cartItemId)
-        fetchData()
+        fetchCart()
     };
 
     return (
         <Grid container spacing={2}>
-            {/* Main Product Information */}
             <Grid item xs={12} md={6}>
                 <CardContent>
                     <Typography variant="h5" gutterBottom>{product.name}</Typography>
@@ -67,7 +67,6 @@ function MainProductInfo({ product,cart,setCart,fetchData}) {
                     <Typography variant="body1" color="textSecondary">Gender: {product.gender}</Typography>
                 </CardContent>
             </Grid>
-            {/* Additional Details */}
             <Grid item xs={12} md={6}>
                 <CardContent>
                     {product.discount > 0 && (

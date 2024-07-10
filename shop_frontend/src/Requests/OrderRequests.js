@@ -20,14 +20,8 @@ export default class OrderRequests{
     static async getOrdersPages(){
         return (await axiosInstance.get(`${url}/pages`)).data;
     }
-    static async getSettlements(){
-        return (await axiosInstance.get(`${url}/settlements`)).data;
-    }
-    static async getDepartments(){
-        return (await axiosInstance.get(`${url}/departments`)).data;
-    }
-    static async addOrder(body){
-        return (await axiosInstance.post(url, body)).data;
+    static async addOrder(body, cartId){
+        return (await axiosInstance.post(`${url}/carts/${cartId}`, body)).data;
     }
     static async deleteOrder(orderId){
         return (await axiosInstance.delete(`${url}/${orderId}`)).data;

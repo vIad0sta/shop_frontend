@@ -15,8 +15,9 @@ import {
     ToggleButtonGroup, Typography
 } from "@mui/material";
 import CategoryRequests from "../Requests/CategoryRequests";
-import ProductShortCut from "./ProductShortCut";
-import BuyOverlay from "./BuyOverlay";
+import ProductShortCut from "../Components/ProductShortCut";
+import BuyOverlay from "../Components/Overlays/BuyOverlay";
+import {useCart} from "../Contexts/CartContext";
 
 const paginationStyles = css`
       .MuiPaginationItem-root {
@@ -29,7 +30,7 @@ const paginationStyles = css`
       }
     `;
 
-function Home({cart,setCart,fetchCart}){
+function Home(){
     const [products, setProducts] = useState(null);
     const [categories, setCategories] = useState(null);
     const [sizes, setSizes] = useState(null);
@@ -194,7 +195,7 @@ function Home({cart,setCart,fetchCart}){
                         ))}
                         {products && products.map((item, index) => (
                             <Grid key={index} item xl={4} xs={4} md={4}>
-                                <Link to={`/product/${item.id}`} style={{ textDecoration: 'none' }}> {/* Wrap ProductShortCut with Link */}
+                                <Link to={`/product/${item.id}`} style={{ textDecoration: 'none' }}>
                                     <ProductShortCut product={item} onOverlayOpen={onOverlayOpen}/>
                                 </Link>
                             </Grid>
@@ -212,7 +213,7 @@ function Home({cart,setCart,fetchCart}){
                     defaultPage={1}
                 />
             </div>
-            <BuyOverlay fetchData={fetchCart} cart={cart} setCart={setCart} product={selectedProduct} open={isOverlayOpen} handleClose={onOverlayClose}/>
+            <BuyOverlay product={selectedProduct} open={isOverlayOpen} handleClose={onOverlayClose}/>
         </Container>
     );
 }

@@ -4,19 +4,15 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { Container, Typography, Avatar, Grid, Paper } from '@mui/material';
-import { styled } from '@mui/system';
-import ProfileInfo from "./ProfileInfo";
-import ProductRequests from "../Requests/ProductRequests";
-import CategoryRequests from "../Requests/CategoryRequests";
-import UserRequests from "../Requests/UserRequests";
-import ProfileOrders from "./ProfileOrders";
+import ProfileInfo from "../Components/ProfileInfo";
+import RegisteredUserRequests from "../Requests/RegisteredUserRequests";
+import ProfileOrders from "../Components/ProfileOrders";
 
 
 function Profile(props) {
     const [value, setValue] = useState('1')
-    const [user, setUser] = useState()
-    const [userOrders, setUserOrders] = useState()
+    const [user, setUser] = useState(null)
+    const [userOrders, setUserOrders] = useState([])
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -25,9 +21,9 @@ function Profile(props) {
     },[])
 
     const fetchData = async () => {
-        const userData = await UserRequests.getUser()
+        const userData = await RegisteredUserRequests.getUser('me')
         setUser(userData)
-        const ordersData = await UserRequests.getOrders()
+        const ordersData = await RegisteredUserRequests.getOrders()
         setUserOrders(ordersData)
     }
 

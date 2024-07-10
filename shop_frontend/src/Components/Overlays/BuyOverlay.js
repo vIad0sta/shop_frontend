@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Backdrop, Fade, Card, CardContent, CardMedia, Typography, Button, Chip, Grid } from '@mui/material';
-import CartRequests from "../Requests/CartRequests";
+import CartRequests from "../../Requests/CartRequests";
 import {plPL} from "@mui/material/locale";
+import {useCart} from "../../Contexts/CartContext";
 
 function BuyOverlay(props) {
     const [selectedSize, setSelectedSize] = useState(null);
+    const { cart, fetchCart} = useCart();
 
     const isSizeInCart = () => {
-        if(!props.cart || !selectedSize)
+        if(!cart || !selectedSize)
             return
 
-        return props.cart.cartItems.some(item =>
+        return cart.cartItems?.some(item =>
             item.productId === props.product.id &&
             item.clothingSizeId === selectedSize.id
         );
@@ -30,19 +32,19 @@ function BuyOverlay(props) {
             productId: props.product.id,
             clothingSizeId: selectedSize.id,
             quantity: 1,
-            cartId: Number(localStorage.getItem('cartId'))
+            cartId: cart.id
         });
-        props.fetchData()
+        fetchCart();
     };
 
     const handleRemoveFromCart = async () => {
-        let cartItemId = props.cart.cartItems.find(item => (item.clothingSizeId === selectedSize.id && item.productId === props.product.id)).id;
+        let cartItemId = cart.cartItems.find(item => (item.clothingSizeId === selectedSize.id && item.productId === props.product.id)).id;
         await CartRequests.deleteCartItem(cartItemId);
-        props.fetchData();
+        fetchCart();
     };
 
     if (!props.product) {
-        return null; // Don't render anything if product is null
+        return null;
     }
 
     return (

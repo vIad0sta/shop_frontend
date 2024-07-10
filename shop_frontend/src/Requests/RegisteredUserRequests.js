@@ -1,8 +1,8 @@
 import axiosInstance from "./AxiosInstance";
 const url = '/users'
-export default class UserRequests{
-    static async getUser(){
-        return (await axiosInstance.get(`${url}`)).data;
+export default class RegisteredUserRequests {
+    static async getUser(id){
+        return (await axiosInstance.get(`${url}/${id}`)).data;
     }
     static async getCart() {
         return (await axiosInstance.get(`${url}/carts`)).data;

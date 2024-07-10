@@ -11,33 +11,34 @@ import {
     CardContent,
     TextField
 } from "@mui/material";
-import ClearIcon from '@mui/icons-material/Clear'; // Import Clear icon from Material-UI Icons
-import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete icon from Material-UI Icons
-import CartRequests from "../Requests/CartRequests";
+import ClearIcon from '@mui/icons-material/Clear';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CartRequests from "../../Requests/CartRequests";
 import _ from 'lodash';
-import UserRequests from "../Requests/UserRequests";
+import RegisteredUserRequests from "../../Requests/RegisteredUserRequests";
+import {useCart} from "../../Contexts/CartContext";
 
-function CartOverlay({fetchData,cartItems,setCartItems, isOpen, onClose, cart,setCart }) {
-    const [signedIn, setSignedIn] = useState(localStorage.getItem('signedIn') === 'true');
+function CartOverlay({ isOpen, onClose}) {
+    const { cart, cartItems, fetchCart, setCartItems} = useCart();
 
     const debouncedHandleQuantityChange = _.debounce(async (quantity, cartItem) => {
         await CartRequests.updateCartItem(cartItem.cartId, {
             id: cartItem.id,
             quantity: Number(quantity),
         });
-        fetchData()
+        fetchCart()
         }, 700);
     const handleQuantityChange = (quantity, cartItem) => {
         debouncedHandleQuantityChange(quantity, cartItem);
     };
     const handleClearCart = async () => {
         await CartRequests.clearCart(cart.id)
-        setCartItems(null)
-        fetchData()
+        setCartItems(null);
+        fetchCart();
     };
     const handleDeleteItem = async (cartItemId) => {
         await CartRequests.deleteCartItem(cartItemId)
-        fetchData();
+        fetchCart();
     };
     return (
         <Drawer anchor="right"  open={isOpen} onClose={onClose} sx={{ minWidth: 300 }}>
@@ -86,16 +87,19 @@ function CartOverlay({fetchData,cartItems,setCartItems, isOpen, onClose, cart,se
             </div>
             <hr style={{ color: "black", width: '99%' }} />
             {(cart && cartItems && cartItems.length > 0) &&
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
-                    <Button startIcon={<ClearIcon />} variant="outlined" onClick={handleClearCart}>
-                        Clear Cart
-                    </Button>
-                </div>
-            }
-            {(cart && cartItems && cartItems.length > 0) &&
-                <div style={{ width: '100%', height: "100px", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Button style={{ width: '60%', height: "40px" }} variant={'contained'} onClick={() => window.location.href = `/carts/${cart.id}`}>Оглянути</Button>
-                </div>
+                <>
+                    <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
+                        <Button startIcon={<ClearIcon />} variant="outlined" onClick={handleClearCart}>
+                            Clear Cart
+                        </Button>
+                    </div>
+                    <div style={{ width: '100%', height: "100px", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Button style={{ width: '60%', height: "40px" }} variant={'contained'} onClick={() => window.location.href = `/checkout/${cart.id}`}>Оформити</Button>
+                    </div>
+                    <div style={{ width: '100%', height: "100px", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Button style={{ width: '60%', height: "40px" }} variant={'contained'} onClick={() => window.location.href = `/carts/${cart.id}`}>Оглянути</Button>
+                    </div>
+                </>
             }
         </Drawer>
     );

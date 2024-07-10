@@ -2,16 +2,18 @@ import React, {useState} from 'react';
 import { AppBar, Toolbar, Typography, Button} from '@mui/material';
 import AuthRequests from "../Requests/AuthRequests";
 import axios from 'axios';
-import CartOverlay from "./CartOverlay";
+import CartOverlay from "./Overlays/CartOverlay";
+import {useCart} from "../Contexts/CartContext";
 
-const NavBar = ({cart,setCart,fetchData,cartItems, setCartItems}) => {
+const NavBar = () => {
     const handleLogout = async () => {
         await AuthRequests.logout()
         window.location.href = '/login'
     }
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const {cartItems} = useCart();
 
-    const [signedIn, setSignedIn] = useState(localStorage.getItem('signedIn') === 'true');
+    const [signedIn, setSignedIn] = useState(JSON.parse(localStorage.getItem('signedIn')));
     const handleCartClick = () => {
         setIsCartOpen(!isCartOpen);
     }
@@ -92,7 +94,7 @@ c40 0 49 3 49 18 0 9 -23 150 -50 312 -28 162 -50 298 -50 303 0 4 -31 7 -70
 
                     </svg>
                 </Button>
-                <CartOverlay fetchData={fetchData} cartItems={cartItems} setCartItems={setCartItems} cart={cart} setCart={setCart} isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+                <CartOverlay isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
             </Toolbar>
         </AppBar>
     );
