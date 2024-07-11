@@ -33,13 +33,14 @@ function Checkout() {
     const [guest, setGuest] = useState(null);
     const { cartItems, cart } = useCart();
     const { user, setUser } = useUser();
+
     const [creator, setCreator] = useState({
         name: '',
         surname: '',
         email: '',
         departmentRef: '',
         phoneNumber: '',
-    })
+    });
     const [shippingInfo, setShippingInfo] = useState({
         creatorId: '',
         cartId: '',
@@ -49,7 +50,7 @@ function Checkout() {
     const autoCompleteProps = {
         isOptionEqualToValue: (option, value) => option.Ref === value.Ref,
         getOptionLabel: (option) => option.Description
-    }
+    };
 
     useEffect(() => {
         if(!user){
@@ -204,7 +205,6 @@ function Checkout() {
             />
             <h2>Оплата</h2>
             <FormControl component="fieldset">
-                <FormLabel component="legend">Виберіть тип оплати</FormLabel>
                 <RadioGroup
                     aria-label="payment"
                     name="payOption"

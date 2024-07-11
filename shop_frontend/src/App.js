@@ -10,6 +10,7 @@ import ProductPage from "./Pages/ProductPage";
 import {CartProvider} from "./Contexts/CartContext";
 import Checkout from "./Pages/Checkout";
 import {UserProvider} from "./Contexts/UserContext";
+import ViewCartPage from "./Components/ViewCartPage";
 
 
 
@@ -28,6 +29,9 @@ function App() {
                               <Route path="/profile" element={<Profile />} />
                               <Route path="/product/:id" element={<ProductPage />} />
                               <Route path="/checkout/:cartId" element={<Checkout/>} />
+                              <Route path="/view-cart-page" element={<ViewCartPage />}/>
+                              <Route path="/view-cart-page/:idArray" element={<ViewCartPage />}/>
+
 
 
 
