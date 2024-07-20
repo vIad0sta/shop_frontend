@@ -16,7 +16,6 @@ function ViewCartPage({ }) {
     const { cart, setCart, fetchCart } = useCart();
 
     useEffect(() => {
-        let ids
         if(!cart || !cart.cartItems) return
 
         fetchProductsFromCart();
@@ -26,10 +25,11 @@ function ViewCartPage({ }) {
             ids.map(id => {
                 setSelectedCartItems(prevItems => [
                     ...prevItems,
-                    cart.cartItems.find(product => product.id === id)
+                    cart.cartItems.find(product => product.id == id)
                 ]);
             });
         }
+        console.log(selectedCartItems)
     }, [cart]);
 
     useEffect(() => {
@@ -92,7 +92,11 @@ function ViewCartPage({ }) {
 
 
     const handleMakeOrder = () => {
-        window.location.href = `/checkout/${cart.id}`;
+        window.location.href = !idArray ?
+            `/checkout` :
+            `/checkout/${idArray}`
+
+
     };
 
     const handlePromoCodeChange = (event) => {
@@ -118,7 +122,7 @@ function ViewCartPage({ }) {
                                     handleRemoveProduct={handleRemoveProduct}
                                     handleQuantityChange={handleQuantityChange}
                                     quantity={item.quantity}
-                                    size={item.size}
+                                    size={product.clothingSizes.find(size => size.id === item.clothingSizeId).name}
                                     cartItemId={item.id}
                                 />
                             );

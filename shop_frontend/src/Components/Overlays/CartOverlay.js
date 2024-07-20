@@ -75,7 +75,7 @@ function CartOverlay({ isOpen, onClose}) {
                 <Button startIcon={<ClearIcon />} style={{ width: '100%' }} onClick={onClose}>
                     {/* Close */}
                 </Button>
-                {(cart && cart.cartItems.length > 0) &&
+                {(cart && cart.cartItems && cart.cartItems.length > 0) &&
                 <Button
                     style={{ width: '100%' }}
                     color="primary"
@@ -99,6 +99,10 @@ function CartOverlay({ isOpen, onClose}) {
                                 <Typography variant="body1">{item.name}</Typography>
                                 <Typography style={{ fontSize: 18 }} variant="body2" color="primary">
                                     {item.price * cart.cartItems[index].quantity}₴
+                                </Typography>
+                                <Typography style={{ fontSize: 18 }} variant="body2" color="primary">
+                                    {item.clothingSizes.find(
+                                        size => size.id === cart.cartItems[index].clothingSizeId).name}
                                 </Typography>
                                 <TextField
                                     type={'number'}

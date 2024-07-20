@@ -24,6 +24,8 @@ import {useUser} from "../Contexts/UserContext";
 import RegisteredUserRequests from "../Requests/RegisteredUserRequests";
 import UnregisteredUserRequests from "../Requests/UnregisteredUserRequests";
 import CheckoutShortcut from "../Components/CheckoutShortcut";
+import {useParams} from "react-router-dom";
+import CartViewProduct from "../Components/CartViewProduct";
 
 function Checkout() {
     const [selectedSettlement, setSelectedSettlement] = useState(null);
@@ -33,6 +35,8 @@ function Checkout() {
     const [guest, setGuest] = useState(null);
     const { cartItems, cart } = useCart();
     const { user, setUser } = useUser();
+    const { idArray } = useParams();
+    const [selectedCartItems, setSelectedCartItems] = useState([])
 
     const [creator, setCreator] = useState({
         name: '',
@@ -53,6 +57,7 @@ function Checkout() {
     };
 
     useEffect(() => {
+        let i
         if(!user){
             fetchGuestData();
         }
@@ -66,7 +71,16 @@ function Checkout() {
                 phoneNumber: user.phoneNumber,
             })
         }
-    }, [user]);
+        if (cart?.cartItems && idArray && selectedCartItems.length === 0) {
+            const ids = idArray.split(',');
+            ids.map(id => {
+                setSelectedCartItems(prevItems => [
+                    ...prevItems,
+                    cart.cartItems.find(product => product.id == id)
+                ]);
+            });
+        }
+    }, [user,cart]);
     useEffect(() => {
         if(selectedSettlement){
             fetchDepartments(selectedSettlement.Ref)
@@ -106,7 +120,9 @@ function Checkout() {
             setUser(response);
             body = { ...shippingInfo, creatorId: response.id }
         }
-        const resp = await OrderRequests.addOrder(body, cart.id);
+        const resp = idArray
+            ? await OrderRequests.addSpecificOrder(body, idArray)
+            : await OrderRequests.addOrder(body, cart.id)
     };
     const fetchSettlements = async (inputValue) => {
         const response = await NPRequests.getSettlements(inputValue);
@@ -181,9 +197,22 @@ function Checkout() {
             </Box>
             <h2>Замовлення</h2>
             <List style={{ width: '100%' }}>
-                {cartItems && cartItems.map((item, index) => (
-                    <CheckoutShortcut item={item} index={index} cart={cart}/>
-                ))}
+                {(cart?.cartItems && cartItems) &&
+                    (!idArray ? cart.cartItems : selectedCartItems).map((item) => {
+                        if (!item) return null; // Check if item is undefined
+                        const product = cartItems.find(productFromCart => productFromCart.id === item.productId);
+                        if (!product) return null; // Check if product is undefined
+
+                        return (
+                            <CheckoutShortcut
+                                item={product}
+                                size={product.clothingSizes.find(size => size.id === item.clothingSizeId).name}
+                                cart={cart}
+                                quantity={item.quantity}
+                            />
+
+                        );
+                    })}
             </List>
             <h2>Доставка</h2>
             <CustomAutocomplete

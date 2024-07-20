@@ -1,7 +1,7 @@
 import React from 'react';
 import {Card, CardContent, CardMedia, Typography} from "@mui/material";
 
-function CheckoutShortcut({item, cart, index}) {
+function CheckoutShortcut({item, cart, size,quantity}) {
     return (
         <Card key={item.id} sx={{ display: 'flex' }}>
             <CardMedia
@@ -19,13 +19,13 @@ function CheckoutShortcut({item, cart, index}) {
                     <Typography variant="body2" color="text.secondary" style={{ flex: 1 }}>
                         {item.description}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" style={{ flex: 1 }}>
-                        {item.clothingSizes.find(size => size.id === cart.cartItems[index].clothingSizeId).name}
+                    <Typography gutterBottom variant="h5" color="primary" component="div">
+                        {size}
                     </Typography>
                 </CardContent>
                 <CardContent>
                     <Typography variant="body2" color="text.secondary">
-                        Price: {cart.cartItems[index].quantity} * {item.price} = {cart.cartItems[index].quantity * item.price}₴
+                        Price: {quantity} * {item.price} = {quantity * item.price}₴
                     </Typography>
                 </CardContent>
             </div>

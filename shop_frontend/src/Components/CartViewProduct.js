@@ -21,6 +21,9 @@ function CartViewProduct({product,cart,handleRemoveProduct,handleQuantityChange,
                             <Typography variant="body2" color="primary" sx={{ fontSize: '1.1rem' }}>
                                 Price: ${product.price}
                             </Typography>
+                            <Typography gutterBottom variant="h5" color="primary" component="div">
+                                {size}
+                            </Typography>
                         </div>
                         <div>
                             <Typography variant="body2" color="text.secondary">
