@@ -123,6 +123,8 @@ function Checkout() {
         const resp = idArray
             ? await OrderRequests.addSpecificOrder(body, idArray)
             : await OrderRequests.addOrder(body, cart.id)
+        window.location.href = `/payment-page/${resp.id}`
+
     };
     const fetchSettlements = async (inputValue) => {
         const response = await NPRequests.getSettlements(inputValue);

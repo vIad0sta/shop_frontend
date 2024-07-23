@@ -12,6 +12,7 @@ import Checkout from "./Pages/Checkout";
 import {UserProvider} from "./Contexts/UserContext";
 import ViewCartPage from "./Components/ViewCartPage";
 import OrdersHistoryPage from "./Components/OrdersHistoryPage";
+import PaymentPage from "./Components/PaymentPage";
 
 
 
@@ -34,6 +35,7 @@ function App() {
                                 <Route path="/view-cart-page" element={<ViewCartPage/>}/>
                                 <Route path="/orders-history" element={<OrdersHistoryPage/>}/>
                                 <Route path="/view-cart-page/:idArray" element={<ViewCartPage/>}/>
+                                <Route path="/payment-page/:orderId" element={<PaymentPage/>}/>
 
 
 
