@@ -4,36 +4,42 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import ProfileInfo from "../Components/ProfileInfo";
+import ProfileInfo from "../Components/ProfilePage/ProfileInfo";
 import RegisteredUserRequests from "../Requests/RegisteredUserRequests";
-import ProfileOrders from "../Components/ProfileOrders";
+import ProfileOrders from "../Components/ProfilePage/ProfileOrders";
 
 
-function Profile(props) {
+function Profile() {
     const [value, setValue] = useState('1')
     const [user, setUser] = useState(null)
     const [userOrders, setUserOrders] = useState([])
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+
+    const fetchData = async () => {
+        try {
+            const userData = await RegisteredUserRequests.getUser('me')
+            setUser(userData);
+            const ordersData = await RegisteredUserRequests.getOrders()
+            setUserOrders(ordersData);
+        } catch (e) {
+            console.error(e.message)
+        }
+    }
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    useEffect(() => {
-        fetchData()
-    },[])
-
-    const fetchData = async () => {
-        const userData = await RegisteredUserRequests.getUser('me')
-        setUser(userData)
-        const ordersData = await RegisteredUserRequests.getOrders()
-        setUserOrders(ordersData)
-    }
 
     return (
         <TabContext value={value}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                 <TabList onChange={handleChange} aria-label="lab API tabs example">
-                    <Tab label="Profile info" value="1" />
-                    <Tab label="My orders" value="2" />
-                    <Tab label="My discounts" value="3" />
+                    <Tab label="Profile info" value="1"/>
+                    <Tab label="My orders" value="2"/>
+                    <Tab label="My discounts" value="3"/>
                 </TabList>
             </Box>
             <TabPanel value="1"><ProfileInfo user={user}/></TabPanel>

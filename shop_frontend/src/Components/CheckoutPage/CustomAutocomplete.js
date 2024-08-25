@@ -1,16 +1,16 @@
-import { Autocomplete, CircularProgress, TextField } from "@mui/material";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { debounce } from "lodash";
-import { VariableSizeList } from 'react-window';
+import {Autocomplete, CircularProgress, TextField} from "@mui/material";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {debounce} from "lodash";
+import {VariableSizeList} from 'react-window';
 
 const LISTBOX_PADDING = 4;
 
 const renderRow = (props) => {
-    const { data, index, style } = props;
+    const {data, index, style} = props;
     const item = data[index];
 
     return (
-        <div style={{ ...style, top: style.top + LISTBOX_PADDING }} key={item.Ref}>
+        <div style={{...style, top: style.top + LISTBOX_PADDING}} key={item.Ref}>
             {item}
         </div>
     );
@@ -34,7 +34,7 @@ const useResetCache = (data) => {
 };
 
 const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) {
-    const { children, ...other } = props;
+    const {children, ...other} = props;
     const itemData = React.Children.toArray(children);
     const itemCount = itemData.length;
     const itemSize = 36;
@@ -79,7 +79,7 @@ const CustomAutocomplete = ({
                                 fetchOptions,
                                 staticOptions,
                                 isOptionEqualToValue = (option, value) => option.Ref === value.Ref,
-                                getOptionLabel = (option) => option.Description,
+                                getOptionLabel = (option) => option.description,
                                 disabled = false,
                                 setSelectedOption
                             }) => {
@@ -134,7 +134,7 @@ const CustomAutocomplete = ({
                         ...params.InputProps,
                         endAdornment: (
                             <>
-                                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                {loading ? <CircularProgress color="inherit" size={20}/> : null}
                                 {params.InputProps.endAdornment}
                             </>
                         ),
@@ -142,7 +142,7 @@ const CustomAutocomplete = ({
                 />
             )}
             ListboxComponent={React.forwardRef((props, ref) => (
-                <ListboxComponent {...props} ref={ref} />
+                <ListboxComponent {...props} ref={ref}/>
             ))}
         />
     );

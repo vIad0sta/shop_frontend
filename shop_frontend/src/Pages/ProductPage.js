@@ -1,17 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ProductRequests from "../Requests/ProductRequests";
-import { useParams } from "react-router-dom";
-import {
-    Container,
-    Typography,
-    Card,
-    CardContent,
-    Grid,
-    Chip,
-    Divider,
-    CardMedia,
-    Rating
-} from "@mui/material";
+import {useParams} from "react-router-dom";
+import {Card, CardMedia, Container} from "@mui/material";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -19,19 +9,13 @@ import Box from "@mui/material/Box";
 import TabList from "@mui/lab/TabList";
 import Tab from "@mui/material/Tab";
 import TabPanel from "@mui/lab/TabPanel";
-import ProfileInfo from "../Components/ProfileInfo";
-import ProfileOrders from "../Components/ProfileOrders";
 import TabContext from "@mui/lab/TabContext";
-import MainProductInfo from "../Components/MainProductInfo";
-import ProductDescription from "../Components/ProductDescription";
-import ProductReviews from "../Components/ProductReviews";
-import ReviewRequests from "../Requests/ReviewRequests";
-import CartRequests from "../Requests/CartRequests";
-import RegisteredUserRequests from "../Requests/RegisteredUserRequests";
-import {useCart} from "../Contexts/CartContext";
+import MainProductInfo from "../Components/ProductPage/MainProductInfo";
+import ProductDescription from "../Components/ProductPage/ProductDescription";
+import ProductReviews from "../Components/ProductPage/ProductReviews";
 
 function SampleNextArrow(props) {
-    const { className, style, onClick } = props;
+    const {className, style, onClick} = props;
     return (
         <div
             className={className}
@@ -46,9 +30,8 @@ function SampleNextArrow(props) {
                 position: "absolute",
                 top: "50%",
                 transform: "translateY(-50%)",
-                backgroundColor: 'lightblue',
                 alignItems: 'center',
-
+                backgroundColor: 'lightblue',
             }}
             onClick={onClick}
         />
@@ -56,7 +39,7 @@ function SampleNextArrow(props) {
 }
 
 function SamplePrevArrow(props) {
-    const { className, style, onClick } = props;
+    const {className, style, onClick} = props;
     return (
         <div
             className={className}
@@ -81,14 +64,15 @@ function SamplePrevArrow(props) {
         />
     );
 }
+
 function ProductPage() {
 
     const [product, setProduct] = useState(null);
-    const [imageCounter, setImageCounter] = useState(null);
-    const { id } = useParams();
+    const [imageCounter, setImageCounter] = useState(0);
+    const {id} = useParams();
     const url = 'https://localhost:8080/images';
-    const [value, setValue] = useState('1')
-    const [reviews, setReviews] = useState()
+    const [value, setValue] = useState('1');
+    const [reviews, setReviews] = useState([]);
     useEffect(() => {
         fetchData();
     }, []);
@@ -113,7 +97,6 @@ function ProductPage() {
     };
 
 
-
     const settings = {
         dots: true,
         fade: true,
@@ -122,8 +105,8 @@ function ProductPage() {
         slidesToShow: 1,
         slidesToScroll: 1,
         waitForAnimate: false,
-        nextArrow: <SampleNextArrow />,
-        prevArrow: <SamplePrevArrow  />,
+        nextArrow: <SampleNextArrow/>,
+        prevArrow: <SamplePrevArrow/>,
     };
 
 
@@ -138,21 +121,21 @@ function ProductPage() {
                                     component="img"
                                     alt={`Product Image ${index}`}
                                     image={`${url}/${id}/${id}_${index}.png`}
-                                    style={{ width: '100%', height: '70vh' }}
+                                    style={{width: '100%', height: '70vh'}}
                                 />
                             </div>
                         ))}
                     </Slider>
-                    <TabContext value={value} >
-                        <Box sx={{borderBottom: 1, borderColor: 'divider' }}>
+                    <TabContext value={value}>
+                        <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                             <TabList onChange={handleChange} aria-label="lab API tabs example">
-                                <Tab label="Main" value="1" />
-                                <Tab label="Description" value="2" />
-                                <Tab label="Reviews" value="3" />
+                                <Tab label="Main" value="1"/>
+                                <Tab label="Description" value="2"/>
+                                <Tab label="Reviews" value="3"/>
                             </TabList>
                         </Box>
                         <TabPanel value="1"><MainProductInfo product={product}/></TabPanel>
-                        <TabPanel value="2"><ProductDescription /></TabPanel>
+                        <TabPanel value="2"><ProductDescription/></TabPanel>
                         <TabPanel value="3"><ProductReviews reviews={reviews} setReviews={setReviews}/></TabPanel>
                     </TabContext>
                 </Card>

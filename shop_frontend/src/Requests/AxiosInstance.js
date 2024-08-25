@@ -1,5 +1,4 @@
 import axios from 'axios';
-// import AuthRequests from "./AuthRequests";
 
 const axiosInstance = axios.create({
     withCredentials: true,
@@ -8,13 +7,18 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     async config => {
-        if(config.url.includes('auth')) return config;
-        const expiredAt = localStorage.getItem('expiredAt');
-        if (expiredAt && new Date(Date.now()) >= new Date(Date.parse(expiredAt))) {
-           const response = await axios.post(`https://localhost:8080/tokens/refresh`, {}, {withCredentials: true});
-           localStorage.setItem('expiredAt', new Date(response.data))
+        if(config.url.includes('auth') || config.url.includes('logout')) return config;
+        try{
+            const expiredAt = localStorage.getItem('expiredAt');
+            if (expiredAt && new Date(Date.now()) >= new Date(Date.parse(expiredAt))) {
+                const response = await axios.post(`https://localhost:8080/tokens/refresh`, {}, {withCredentials: true});
+                localStorage.setItem('expiredAt', new Date(response.data))
+            }
+            return config;
         }
-        return config;
+        catch (e) {
+            console.error(e.message)
+        }
     },
     error => {
         return Promise.reject(error);

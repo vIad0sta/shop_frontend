@@ -2,7 +2,7 @@ import React from 'react';
 import { styled } from "@mui/system";
 import { Container, Grid, Paper, Typography } from "@mui/material";
 
-function ProfileInfo(props) {
+function ProfileInfo({user}) {
     const ProfileContainer = styled(Container)(({ theme }) => ({
         marginTop: theme.spacing(4),
     }));
@@ -21,18 +21,18 @@ function ProfileInfo(props) {
                         <Grid container spacing={2} alignItems="center">
                             <Grid item xs={12}>
                                 <Typography variant="h4" align="center" gutterBottom>
-                                    {props.user && `${props.user.name} ${props.user.surname}`}
+                                    {user && `${user.name} ${user.surname}`}
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
                                 <Typography variant="subtitle1" align="center" gutterBottom>
-                                    Email: {props.user && props.user.email}
+                                    Email: {user && user.email}
                                 </Typography>
                                 <Typography variant="subtitle1" align="center" gutterBottom>
                                     Address: {/* Add address details here if available */}
                                 </Typography>
                                 <Typography variant="subtitle1" align="center" gutterBottom>
-                                    Phone: {props.user && props.user.phoneNumber}
+                                    Phone: {user && user.phoneNumber}
                                 </Typography>
                             </Grid>
                         </Grid>

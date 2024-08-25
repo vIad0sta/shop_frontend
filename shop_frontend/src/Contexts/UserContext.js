@@ -14,7 +14,7 @@ export const UserProvider = ({ children }) => {
             const response = await RegisteredUserRequests.getUser('me');
             setUser(response);
         } catch (e) {
-            console.log(e.message)
+            console.error(e.message)
         }
     };
 

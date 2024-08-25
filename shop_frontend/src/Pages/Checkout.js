@@ -1,31 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import {
-    TextField,
-    Container,
-    List,
-    CardContent,
-    CardMedia,
-    Card,
-    Typography,
-    Button,
-    FormControl,
-    FormLabel,
-    RadioGroup,
-    FormControlLabel,
-    Radio,
-    Grid,
     Box,
+    Button,
+    Container,
+    FormControl,
+    FormControlLabel,
+    Grid,
+    List,
+    Radio,
+    RadioGroup,
+    TextField,
 } from '@mui/material';
 import {useCart} from "../Contexts/CartContext";
-import CustomAutocomplete from "../Components/CustomAutocomplete";
+import CustomAutocomplete from "../Components/CheckoutPage/CustomAutocomplete";
 import NPRequests from "../Requests/NPRequests";
 import OrderRequests from "../Requests/OrderRequests";
 import {useUser} from "../Contexts/UserContext";
-import RegisteredUserRequests from "../Requests/RegisteredUserRequests";
 import UnregisteredUserRequests from "../Requests/UnregisteredUserRequests";
-import CheckoutShortcut from "../Components/CheckoutShortcut";
+import CheckoutShortcut from "../Components/CheckoutPage/CheckoutShortcut";
 import {useParams} from "react-router-dom";
-import CartViewProduct from "../Components/CartViewProduct";
 
 function Checkout() {
     const [selectedSettlement, setSelectedSettlement] = useState(null);
@@ -33,11 +26,10 @@ function Checkout() {
     const [settlements, setSettlements] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [guest, setGuest] = useState(null);
-    const { cartItems, cart } = useCart();
-    const { user, setUser } = useUser();
-    const { idArray } = useParams();
-    const [selectedCartItems, setSelectedCartItems] = useState([])
-
+    const [selectedCartItems, setSelectedCartItems] = useState([]);
+    const {cartItems, cart} = useCart();
+    const {user, setUser} = useUser();
+    const {idArray} = useParams();
     const [creator, setCreator] = useState({
         name: '',
         surname: '',
@@ -53,15 +45,13 @@ function Checkout() {
     });
     const autoCompleteProps = {
         isOptionEqualToValue: (option, value) => option.Ref === value.Ref,
-        getOptionLabel: (option) => option.Description
+        getOptionLabel: (option) => option.description
     };
 
     useEffect(() => {
-        let i
-        if(!user){
+        if (!user) {
             fetchGuestData();
-        }
-        else{
+        } else {
             setShippingInfo({...shippingInfo, creatorId: user.id});
             setCreator({
                 name: user.name,
@@ -76,19 +66,19 @@ function Checkout() {
             ids.map(id => {
                 setSelectedCartItems(prevItems => [
                     ...prevItems,
-                    cart.cartItems.find(product => product.id == id)
+                    cart.cartItems.find(product => product.id === parseInt(id))
                 ]);
             });
         }
-    }, [user,cart]);
+    }, [user, cart]);
     useEffect(() => {
-        if(selectedSettlement){
-            fetchDepartments(selectedSettlement.Ref)
+        if (selectedSettlement) {
+            fetchDepartments(selectedSettlement.ref)
         }
     }, [selectedSettlement]);
     useEffect(() => {
-        if(selectedDepartment){
-            setCreator({ ...creator, departmentRef: selectedDepartment.Ref });
+        if (selectedDepartment) {
+            setCreator({...creator, departmentRef: selectedDepartment.Ref});
         }
     }, [selectedDepartment]);
 
@@ -105,20 +95,20 @@ function Checkout() {
         setShippingInfo({...shippingInfo, creatorId: response.id})
     }
     const findDepartmentByDescription = (description) => {
-        if(!departments.length) return [];
+        if (!departments.length) return [];
         return departments.find(department => department.Description.contains(description));
     };
     const handleInputChange = (event, method, object) => {
-        const { name, value } = event.target;
-        method({ ...object, [name]: value });
+        const {name, value} = event.target;
+        method({...object, [name]: value});
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
         let response, body = shippingInfo;
-        if(!user && !guest){
+        if (!user && !guest) {
             response = await UnregisteredUserRequests.createUser(creator);
             setUser(response);
-            body = { ...shippingInfo, creatorId: response.id }
+            body = {...shippingInfo, creatorId: response.id}
         }
         const resp = idArray
             ? await OrderRequests.addSpecificOrder(body, idArray)
@@ -128,77 +118,45 @@ function Checkout() {
     };
     const fetchSettlements = async (inputValue) => {
         const response = await NPRequests.getSettlements(inputValue);
-        setSettlements(response.settlements);
-        return response.settlements || [];
+        setSettlements(response);
+        return response || [];
     };
     const fetchDepartments = async (inputValue) => {
-        if(!inputValue) return;
+        if (!inputValue) return;
         const options = await NPRequests.getDepartments(inputValue);
-        setDepartments(options.departments);
-        return options.departments || [];
+        setDepartments(options);
+        return options || [];
     }
+    const textFields = [
+        {label: "Ім'я", variant: "standard", name: "name", type: "text", onChange: handleInputChange},
+        {label: "Прізвище", variant: "standard", name: "surname", type: "text", onChange: handleInputChange},
+        {label: "Електронна пошта", variant: "standard", name: "email", type: "email", onChange: handleInputChange},
+        {label: "Телефон", variant: "standard", name: "phoneNumber", type: "text", onChange: handleInputChange}
+    ];
     return (
         <Container maxWidth="xl">
             <h2>Ваші контактні дані</h2>
             <Box component="form">
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            variant="standard"
-                            fullWidth
-                            label="Ім'я"
-                            name="name"
-                            value={creator.name}
-                            onChange={(event) => {
-                                handleInputChange(event, setCreator, creator);
-                            }}
-                            required
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            variant="standard"
-                            fullWidth
-                            label="Прізвище"
-                            name="surname"
-                            value={creator.surname}
-                            onChange={(event) => {
-                                handleInputChange(event, setCreator, creator);
-                            }}
-                            required
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            variant="standard"
-                            fullWidth
-                            label="Електронна пошта"
-                            type="email"
-                            name="email"
-                            value={creator.email}
-                            onChange={(event) => {
-                                handleInputChange(event, setCreator, creator);
-                            }}
-                            required
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            variant="standard"
-                            fullWidth
-                            label="Телефон"
-                            name="phoneNumber"
-                            value={creator.phoneNumber}
-                            onChange={(event) => {
-                                handleInputChange(event, setCreator, creator);
-                            }}
-                            required
-                        />
-                    </Grid>
+                    {textFields.map((item, index) => (
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                key={index}
+                                label={item.label}
+                                name={item.name}
+                                variant={item.variant}
+                                type={item.type}
+                                value={creator[item.name]}
+                                fullWidth
+                                onChange={item.onClick}
+                                required
+                            />
+                        </Grid>
+                    ))}
                 </Grid>
             </Box>
             <h2>Замовлення</h2>
-            <List style={{ width: '100%' }}>
+            <List style={{width: '100%'}}>
                 {(cart?.cartItems && cartItems) &&
                     (!idArray ? cart.cartItems : selectedCartItems).map((item) => {
                         if (!item) return null; // Check if item is undefined
@@ -244,8 +202,8 @@ function Checkout() {
                         handleInputChange(event, setShippingInfo, shippingInfo);
                     }}
                 >
-                    <FormControlLabel value="PRE_PAYMENT" control={<Radio />} label="Pre Payment 150 UAH" />
-                    <FormControlLabel value="FULL_PAYMENT" control={<Radio />} label="Full Payment" />
+                    <FormControlLabel value="PRE_PAYMENT" control={<Radio/>} label="Pre Payment 150 UAH"/>
+                    <FormControlLabel value="FULL_PAYMENT" control={<Radio/>} label="Full Payment"/>
                 </RadioGroup>
             </FormControl>
             <br></br>

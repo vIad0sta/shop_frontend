@@ -10,9 +10,10 @@ import ProductPage from "./Pages/ProductPage";
 import {CartProvider} from "./Contexts/CartContext";
 import Checkout from "./Pages/Checkout";
 import {UserProvider} from "./Contexts/UserContext";
-import ViewCartPage from "./Components/ViewCartPage";
-import OrdersHistoryPage from "./Components/OrdersHistoryPage";
-import PaymentPage from "./Components/PaymentPage";
+import ViewCartPage from "./Pages/ViewCartPage";
+import OrdersHistoryPage from "./Pages/OrdersHistoryPage";
+import PaymentPage from "./Pages/PaymentPage";
+import ProductCreator from "./Pages/ProductCreator";
 
 
 
@@ -36,6 +37,7 @@ function App() {
                                 <Route path="/orders-history" element={<OrdersHistoryPage/>}/>
                                 <Route path="/view-cart-page/:idArray" element={<ViewCartPage/>}/>
                                 <Route path="/payment-page/:orderId" element={<PaymentPage/>}/>
+                                <Route path="/product-creator" element={<ProductCreator/>}/>
 
 
 

@@ -7,9 +7,9 @@ import {
     Rating,
     Divider
 } from '@mui/material';
-import ReviewRequests from "../Requests/ReviewRequests";
+import ReviewRequests from "../../Requests/ReviewRequests";
 import {useParams} from "react-router-dom";
-import ProductRequests from "../Requests/ProductRequests";
+import ProductRequests from "../../Requests/ProductRequests";
 
 function ProductReviews({ reviews, setReviews}) {
     const { id } = useParams();
@@ -28,13 +28,19 @@ function ProductReviews({ reviews, setReviews}) {
     };
 
     const handleReviewSubmit = async () => {
-        await ReviewRequests.addReview(newReview)
-        setNewReview({
-            mark: 0,
-            reviewText: ''
-        });
-        const reviewResponse = await ProductRequests.getProductReviews(id)
-        setReviews(reviewResponse)
+        try{
+            await ReviewRequests.addReview(newReview)
+            setNewReview({
+                clothingId: id,
+                mark: 0,
+                reviewText: ''
+            });
+            const reviewResponse = await ProductRequests.getProductReviews(id)
+            setReviews(reviewResponse)
+        }
+        catch (e) {
+            console.error(e.message)
+        }
     };
 
     return (

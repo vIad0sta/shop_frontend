@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { CardContent, Chip, Grid, Rating, Typography, Button } from "@mui/material";
-import CartRequests from "../Requests/CartRequests";
-import ProductRequests from "../Requests/ProductRequests";
-import RegisteredUserRequests from "../Requests/RegisteredUserRequests";
-import {useCart} from "../Contexts/CartContext";
+import React, {useState} from 'react';
+import {Button, CardContent, Chip, Grid, Rating, Typography} from "@mui/material";
+import CartRequests from "../../Requests/CartRequests";
+import {useCart} from "../../Contexts/CartContext";
 
 function MainProductInfo({product}) {
     const [selectedSize, setSelectedSize] = useState(null);
-    const { cart, fetchCart} = useCart();
+    const {cart, fetchCart} = useCart();
 
     const calculateDiscountedPrice = () => {
         if (product && product.discount > 0) {
@@ -26,14 +24,13 @@ function MainProductInfo({product}) {
     };
 
     const isSizeInCart = () => {
-        if(!cart || !selectedSize)
+        if (!cart || !selectedSize)
             return
         return cart.cartItems.some(item =>
             item.productId === product.id &&
             item.clothingSizeId === selectedSize.id
         );
     };
-
 
     const handleAddToCart = async () => {
         await CartRequests.addCartItem({
@@ -42,13 +39,13 @@ function MainProductInfo({product}) {
             quantity: 1,
             cartId: cart.id
         });
-        fetchCart()
+        fetchCart();
     };
 
     const handleRemoveFromCart = async () => {
         let cartItemId = cart.cartItems.find(item => (item.clothingSizeId === selectedSize.id && item.productId === product.id)).id
         await CartRequests.deleteCartItem(cartItemId)
-        fetchCart()
+        fetchCart();
     };
 
     return (
@@ -71,7 +68,7 @@ function MainProductInfo({product}) {
                 <CardContent>
                     {product.discount > 0 && (
                         <>
-                            <Typography variant="h6" color="textSecondary" style={{ textDecoration: 'line-through' }}>
+                            <Typography variant="h6" color="textSecondary" style={{textDecoration: 'line-through'}}>
                                 Original Price: ${product.price}
                             </Typography>
                             <Typography variant="h6" color="primary">
@@ -100,7 +97,7 @@ function MainProductInfo({product}) {
                         variant="contained"
                         color={isSizeInCart() ? "secondary" : "primary"}
                         onClick={isSizeInCart() ? handleRemoveFromCart : handleAddToCart}
-                        style={{ marginTop: '20px' }}
+                        style={{marginTop: '20px'}}
                         disabled={!isSizeSelected()}
                     >
                         {isSizeInCart() ? "Remove from Cart" : "Add to Cart"}

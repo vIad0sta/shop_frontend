@@ -1,17 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import { Grid, Typography, Paper, CardContent } from '@mui/material';
-import ProductRequests from "../Requests/ProductRequests";
-import OrderRequests from "../Requests/OrderRequests";
+import {CardContent, Grid, Paper, Typography} from '@mui/material';
+import OrderRequests from "../../Requests/OrderRequests";
 
-function OrderList({ currentOrder }) {
-    const [products,setProducts] = useState()
+function OrderList({currentOrder}) {
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
         fetchData();
     }, []);
     const fetchData = async () => {
-        const productsResponse = await OrderRequests.getOrderItems(currentOrder.id);
-        setProducts(productsResponse);
+       try {
+           const productsResponse = await OrderRequests.getOrderItems(currentOrder.id);
+           setProducts(productsResponse);
+       } catch (e) {
+           console.error(e.message)
+       }
     }
 
     if (!currentOrder || !currentOrder.orderItems) {
@@ -19,19 +22,18 @@ function OrderList({ currentOrder }) {
     }
 
 
-
-        return (
-        <Grid container spacing={2} >
+    return (
+        <Grid container spacing={2}>
             {products && products.map((orderItem, index) => (
-                <Grid item xs={products.length === 1 ? 12 : 6} key={index} sx={{ marginBottom: 2 }}>
-                    <Paper elevation={3} sx={{ width: '100%', display: 'flex'}}>
-                        <Grid container spacing={2} style={{ flex: 1, alignItems: 'center' }}>
+                <Grid item xs={products.length === 1 ? 12 : 6} key={index} sx={{marginBottom: 2}}>
+                    <Paper elevation={3} sx={{width: '100%', display: 'flex'}}>
+                        <Grid container spacing={2} style={{flex: 1, alignItems: 'center'}}>
                             <Grid item xs={4}>
-                                <div style={{ margin: '0 auto' }}>
+                                <div style={{margin: '0 auto'}}>
                                     <img
                                         src={`https://localhost:8080/images/${orderItem.id}/${orderItem.id}_1.png`}
                                         alt={orderItem.name}
-                                        style={{ width: 250, height: 200, objectFit: 'cover',marginTop: 5 }}
+                                        style={{width: 250, height: 200, objectFit: 'cover', marginTop: 5}}
                                     />
                                 </div>
                             </Grid>

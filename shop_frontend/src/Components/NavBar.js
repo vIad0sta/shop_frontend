@@ -1,24 +1,24 @@
 import React, {useState} from 'react';
-import { AppBar, Toolbar, Typography, Button} from '@mui/material';
+import {AppBar, Button, Toolbar} from '@mui/material';
 import AuthRequests from "../Requests/AuthRequests";
-import axios from 'axios';
-import CartOverlay from "./Overlays/CartOverlay";
+import CartOverlay from "../Overlays/CartOverlay";
 import {useCart} from "../Contexts/CartContext";
+import {useUser} from "../Contexts/UserContext";
 
 const NavBar = () => {
     const handleLogout = async () => {
-        await AuthRequests.logout()
+        await AuthRequests.logout();
         window.location.href = '/login'
     }
     const [isCartOpen, setIsCartOpen] = useState(false);
     const {cartItems} = useCart();
+    const {user} = useUser();
 
-    const [signedIn, setSignedIn] = useState(JSON.parse(localStorage.getItem('signedIn')));
     const handleCartClick = () => {
         setIsCartOpen(!isCartOpen);
     }
     return (
-        <AppBar position="fixed" style={{height: '100px'}} >
+        <AppBar position="fixed" style={{height: '100px'}}>
             <Toolbar>
 
                 <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
@@ -80,24 +80,26 @@ c40 0 49 3 49 18 0 9 -23 150 -50 312 -28 162 -50 298 -50 303 0 4 -31 7 -70
                 </svg>
 
 
-
                 <Button onClick={() => window.location.href = '/'} color="inherit">Home</Button>
-                {!signedIn && <Button onClick={() => window.location.href = '/login'} color="inherit">Login</Button>}
-                {!signedIn && <Button onClick={() => window.location.href = '/registration'} color="inherit">Registration</Button>}
-                {signedIn && <Button onClick={() => window.location.href = '/profile'} color="inherit">Profile</Button>}
-                {signedIn && <Button onClick={handleLogout} color="inherit">Logout</Button>}
-                <Button onClick={handleCartClick} style={{ position: 'absolute', right: 40 }}>
+                {!user && <Button onClick={() => window.location.href = '/login'} color="inherit">Login</Button>}
+                {!user && <Button onClick={() => window.location.href = '/registration'}
+                                  color="inherit">Registration</Button>}
+                {user && <Button onClick={() => window.location.href = '/profile'} color="inherit">Profile</Button>}
+                {user && <Button onClick={handleLogout} color="inherit">Logout</Button>}
+                <Button onClick={handleCartClick} style={{position: 'absolute', right: 40}}>
                     <svg fill="#FFFFFF" height="28" viewBox="0 0 16 16" width="28" xmlns="http://www.w3.org/2000/svg">
-                        <path fill="#FFFFFF" d="M8 2C7.20097 2 6.48245 2.48647 6.1857 3.22834L5.47703 5H3.32297L4.32874 2.48556C4.92922 0.984369 6.38316 0 8 0C9.61684 0 11.0708 0.984368 11.6713 2.48556L12.677 5H10.523L9.81431 3.22834C9.51755 2.48647 8.79903 2 8 2Z"/>
+                        <path fill="#FFFFFF"
+                              d="M8 2C7.20097 2 6.48245 2.48647 6.1857 3.22834L5.47703 5H3.32297L4.32874 2.48556C4.92922 0.984369 6.38316 0 8 0C9.61684 0 11.0708 0.984368 11.6713 2.48556L12.677 5H10.523L9.81431 3.22834C9.51755 2.48647 8.79903 2 8 2Z"/>
                         <path fill="#FFFFFF" d="M15 7H1V9L3 15H13L15 9V7Z"/>
-                        {(cartItems && cartItems.length > 0) && <text x="50%" y="75%" dominant-baseline="middle" text-anchor="middle" fill="black" fontWeight={'bold'} font-size="8">{cartItems.length}</text>}
+                        {(cartItems && cartItems.length > 0) &&
+                            <text x="50%" y="75%" dominant-baseline="middle" text-anchor="middle" fill="black"
+                                  fontWeight={'bold'} font-size="8">{cartItems.length}</text>}
 
                     </svg>
                 </Button>
-                <CartOverlay isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+                <CartOverlay isOpen={isCartOpen} onClose={() => setIsCartOpen(false)}/>
             </Toolbar>
-        </AppBar>
-    );
+        </AppBar>);
 };
 
 export default NavBar;

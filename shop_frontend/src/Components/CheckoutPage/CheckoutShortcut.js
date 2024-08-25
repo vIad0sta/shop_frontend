@@ -1,7 +1,7 @@
 import React from 'react';
 import {Card, CardContent, CardMedia, Typography} from "@mui/material";
 
-function CheckoutShortcut({item, cart, size,quantity}) {
+function CheckoutShortcut({item, size,quantity}) {
     return (
         <Card key={item.id} sx={{ display: 'flex' }}>
             <CardMedia

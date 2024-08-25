@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {Pagination} from "@mui/material";
-import ProductRequests from "../Requests/ProductRequests";
 import OrderRequests from "../Requests/OrderRequests";
 
 function OrdersHistoryPage(props) {
@@ -28,7 +27,7 @@ function OrdersHistoryPage(props) {
                     <p>{order.id}</p>
                 ))}
             </div>
-            <div style={{ marginTop: '20px' }}>
+            <div style={{marginTop: '20px'}}>
                 <Pagination
                     onChange={onPageChange}
                     color={'secondary'}

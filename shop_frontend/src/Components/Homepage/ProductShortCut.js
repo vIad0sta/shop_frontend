@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Card, CardContent, CardMedia, Typography, Button } from "@mui/material";
+import {Button, Card, CardContent, CardMedia, Typography} from "@mui/material";
 
 function ProductShortCut(props) {
     const handleBuyClick = (event) => {
@@ -27,7 +26,7 @@ function ProductShortCut(props) {
                     Опис: {props.product.description}
                 </Typography>
             </CardContent>
-            <Button sx={{ width: '100%' }} onClick={handleBuyClick}>
+            <Button sx={{width: '100%'}} onClick={handleBuyClick}>
                 Купити
             </Button>
         </Card>

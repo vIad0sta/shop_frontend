@@ -15,14 +15,14 @@ export const CartProvider = ({ children }) => {
     const fetchCart = async () => {
         try{
             const cartResponse = signedIn ?
-                await RegisteredUserRequests.getCart() :
+                await RegisteredUserRequests.getCart('me') :
                 await CartRequests.getCartBySession();
             setCart(cartResponse);
 
             const cartItemsResponse = await CartRequests.getCartProducts(cartResponse.id);
             setCartItems(cartItemsResponse);
         } catch (e) {
-            console.log(e.message)
+            console.error(e.message)
         }
     };
 

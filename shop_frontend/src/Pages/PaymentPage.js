@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Container, Typography, List, Box, Paper, Divider } from '@mui/material';
+import React, {useEffect, useState} from 'react';
+import {Box, Container, Divider, List, Paper, Typography} from '@mui/material';
 import OrderRequests from "../Requests/OrderRequests";
-import { useParams } from "react-router-dom";
+import {useParams} from "react-router-dom";
 import PaymentRequests from "../Requests/PaymentRequests";
-import CheckoutShortcut from "./CheckoutShortcut";
+import CheckoutShortcut from "../Components/CheckoutPage/CheckoutShortcut";
+import PaymentBox from "../Components/PaymentPage/PaymentBox";
 
 function PaymentPage(props) {
-    const { orderId } = useParams();
+    const {orderId} = useParams();
     const [orderData, setOrderData] = useState(null);
     const [productsFromOrder, setProductsFromOrder] = useState([]);
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState(null);
 
     useEffect(() => {
         if (orderId) {
@@ -52,11 +53,17 @@ function PaymentPage(props) {
         };
     };
 
+    const getProductFromOrder = (item) => {
+        if (!item) return null;
+        return productsFromOrder.find(
+            productFromOrder => productFromOrder.id === item.productId);
+    }
+
     return (
         <Container>
             {orderData && (
                 <Box mb={3}>
-                    <Paper elevation={3} sx={{ padding: 2, marginBottom: 2 }}>
+                    <Paper elevation={3} sx={{padding: 2, marginBottom: 2}}>
                         <Typography>Order ID: {orderData.id}</Typography>
                         <Typography>Amount: {orderData.priceOrder}</Typography>
                     </Paper>
@@ -67,16 +74,12 @@ function PaymentPage(props) {
                     <Typography variant="h5" component="h2">
                         Products
                     </Typography>
-                    <Paper elevation={3} sx={{ padding: 2 }}>
-                        <List style={{ width: '100%' }}>
+                    <Paper elevation={3} sx={{padding: 2}}>
+                        <List style={{width: '100%'}}>
                             {(orderData && productsFromOrder) &&
                                 orderData.orderItems.map((item, index) => {
-                                    if (!item) return null; // Check if item is undefined
-                                    const product = productsFromOrder.find(
-                                        productFromOrder => productFromOrder.id === item.productId);
-
-                                    if (!product) return null; // Check if product is undefined
-
+                                    const product = getProductFromOrder(item);
+                                    if (!product) return null;
                                     return (
                                         <React.Fragment key={index}>
                                             <CheckoutShortcut
@@ -84,7 +87,7 @@ function PaymentPage(props) {
                                                 size={product.clothingSizes.find(size => size.id === item.clothingSizeId).name}
                                                 quantity={item.quantity}
                                             />
-                                            {index < productsFromOrder.length - 1 && <Divider />}
+                                            {index < productsFromOrder.length - 1 && <Divider/>}
                                         </React.Fragment>
                                     );
                                 })}
@@ -92,22 +95,9 @@ function PaymentPage(props) {
                     </Paper>
                 </Box>
             )}
-            {formData.action && orderData && (
-                <Box mt={5} display="flex" justifyContent="center">
-                    <form action={formData.action} method="POST" acceptCharset="utf-8">
-                        <input type="hidden" name="data" value={formData.data} />
-                        <input type="hidden" name="signature" value={formData.signature} />
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            size="large"
-                        >
-                            Pay Now {orderData.priceOrder} UAH
-                        </Button>
-                    </form>
-                </Box>
-            )}
+            {formData?.action && orderData &&
+                <PaymentBox orderData={orderData} formData={formData}/>
+            }
         </Container>
     );
 }
