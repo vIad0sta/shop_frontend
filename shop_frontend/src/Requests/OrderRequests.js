@@ -24,7 +24,7 @@ export default class OrderRequests{
         return (await axiosInstance.post(`${url}/carts/${cartId}`, body)).data;
     }
     static async addSpecificOrder(body, idArray){
-        return (await axiosInstance.post(`${url}/carts/spec/${idArray}`, body)).data;
+        return (await axiosInstance.post(`${url}/spec/items/${idArray}`, body)).data;
     }
     static async deleteOrder(orderId){
         return (await axiosInstance.delete(`${url}/${orderId}`)).data;
