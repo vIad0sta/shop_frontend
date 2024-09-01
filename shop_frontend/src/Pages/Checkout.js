@@ -42,9 +42,10 @@ function Checkout() {
         cartId: '',
         orderStatus: 'CONFIRMED',
         payOption: '',
+        departmentRef: '',
     });
     const autoCompleteProps = {
-        isOptionEqualToValue: (option, value) => option.Ref === value.Ref,
+        isOptionEqualToValue: (option, value) => option.ref === value.ref,
         getOptionLabel: (option) => option.description
     };
 
@@ -78,7 +79,8 @@ function Checkout() {
     }, [selectedSettlement]);
     useEffect(() => {
         if (selectedDepartment) {
-            setCreator({...creator, departmentRef: selectedDepartment.Ref});
+            setCreator({...creator, departmentRef: selectedDepartment.ref});
+            setShippingInfo({...shippingInfo, departmentRef: selectedDepartment.ref});
         }
     }, [selectedDepartment]);
 
