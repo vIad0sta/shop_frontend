@@ -34,7 +34,7 @@ function Checkout() {
         name: '',
         surname: '',
         email: '',
-        departmentRef: '',
+        warehouseRef: '',
         phoneNumber: '',
     });
     const [shippingInfo, setShippingInfo] = useState({
@@ -42,7 +42,7 @@ function Checkout() {
         cartId: '',
         orderStatus: 'CONFIRMED',
         payOption: '',
-        departmentRef: '',
+        warehouseRef: '',
     });
     const autoCompleteProps = {
         isOptionEqualToValue: (option, value) => option.ref === value.ref,
@@ -58,7 +58,7 @@ function Checkout() {
                 name: user.name,
                 surname: user.surname,
                 email: user.email,
-                departmentRef: user.departmentRef,
+                warehouseRef: user.warehouseRef,
                 phoneNumber: user.phoneNumber,
             })
         }
@@ -72,15 +72,17 @@ function Checkout() {
             });
         }
     }, [user, cart]);
+
     useEffect(() => {
         if (selectedSettlement) {
             fetchDepartments(selectedSettlement.ref)
         }
     }, [selectedSettlement]);
+
     useEffect(() => {
         if (selectedDepartment) {
-            setCreator({...creator, departmentRef: selectedDepartment.ref});
-            setShippingInfo({...shippingInfo, departmentRef: selectedDepartment.ref});
+            setCreator({...creator, warehouseRef: selectedDepartment.ref});
+            setShippingInfo({...shippingInfo, warehouseRef: selectedDepartment.ref});
         }
     }, [selectedDepartment]);
 
@@ -91,7 +93,7 @@ function Checkout() {
             name: response.name,
             surname: response.surname,
             email: response.email,
-            departmentRef: response.departmentRef,
+            warehouseRef: response.warehouseRef,
             phoneNumber: response.phoneNumber,
         })
         setShippingInfo({...shippingInfo, creatorId: response.id})
@@ -125,16 +127,18 @@ function Checkout() {
     };
     const fetchDepartments = async (inputValue) => {
         if (!inputValue) return;
-        const options = await NPRequests.getDepartments(inputValue);
+        const options = await NPRequests.getWarehouses(inputValue);
         setDepartments(options);
         return options || [];
     }
+
     const textFields = [
         {label: "Ім'я", variant: "standard", name: "name", type: "text", onChange: handleInputChange},
         {label: "Прізвище", variant: "standard", name: "surname", type: "text", onChange: handleInputChange},
         {label: "Електронна пошта", variant: "standard", name: "email", type: "email", onChange: handleInputChange},
         {label: "Телефон", variant: "standard", name: "phoneNumber", type: "text", onChange: handleInputChange}
     ];
+
     return (
         <Container maxWidth="xl">
             <h2>Ваші контактні дані</h2>
