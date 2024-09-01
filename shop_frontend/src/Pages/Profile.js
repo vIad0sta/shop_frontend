@@ -7,12 +7,13 @@ import TabPanel from '@mui/lab/TabPanel';
 import ProfileInfo from "../Components/ProfilePage/ProfileInfo";
 import RegisteredUserRequests from "../Requests/RegisteredUserRequests";
 import ProfileOrders from "../Components/ProfilePage/ProfileOrders";
+import {useUser} from "../Contexts/UserContext";
 
 
 function Profile() {
-    const [value, setValue] = useState('1')
-    const [user, setUser] = useState(null)
-    const [userOrders, setUserOrders] = useState([])
+    const [value, setValue] = useState('1');
+    const {user} = useUser();
+    const [userOrders, setUserOrders] = useState([]);
 
     useEffect(() => {
         fetchData()
@@ -20,8 +21,6 @@ function Profile() {
 
     const fetchData = async () => {
         try {
-            const userData = await RegisteredUserRequests.getUser('me')
-            setUser(userData);
             const ordersData = await RegisteredUserRequests.getOrders()
             setUserOrders(ordersData);
         } catch (e) {

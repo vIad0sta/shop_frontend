@@ -1,20 +1,22 @@
 import React, {createContext, useState, useContext, useEffect} from 'react';
 import RegisteredUserRequests from "../Requests/RegisteredUserRequests";
 import CartRequests from "../Requests/CartRequests";
+import {useUser} from "./UserContext";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
     const [cart,setCart] = useState(null);
     const [cartItems, setCartItems] = useState([]);
-    const [signedIn, setSignedIn] = useState(JSON.parse(localStorage.getItem('signedIn')));
+    const {user} = useUser();
 
     useEffect(() => {
         fetchCart();
     }, []);
+
     const fetchCart = async () => {
         try{
-            const cartResponse = signedIn ?
+            const cartResponse = user !== null ?
                 await RegisteredUserRequests.getCart('me') :
                 await CartRequests.getCartBySession();
             setCart(cartResponse);

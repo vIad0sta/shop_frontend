@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 import {Button, Drawer, List} from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
 import CartRequests from "../Requests/CartRequests";
-import {useCart} from "../Contexts/CartContext";
 import CartOverlayProduct from "../Components/CartOverlay/CartOverlayProduct";
 import SelectModeButtons from "../Components/CartOverlay/SelectModeButtons";
 import CartActions from "../Components/CartOverlay/CartActions";
+import {useCart} from "../Contexts/CartContext";
 
 function CartOverlay({isOpen, onClose}) {
     const {cart, cartItems, fetchCart, setCartItems} = useCart();
