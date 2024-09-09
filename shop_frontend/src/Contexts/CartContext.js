@@ -5,8 +5,8 @@ import {useUser} from "./UserContext";
 
 const CartContext = createContext();
 
-export const CartProvider = ({ children }) => {
-    const [cart,setCart] = useState(null);
+export const CartProvider = ({children}) => {
+    const [cart, setCart] = useState(null);
     const [cartItems, setCartItems] = useState([]);
     const {user} = useUser();
 
@@ -15,7 +15,7 @@ export const CartProvider = ({ children }) => {
     }, []);
 
     const fetchCart = async () => {
-        try{
+        try {
             const cartResponse = user !== null ?
                 await RegisteredUserRequests.getCart('me') :
                 await CartRequests.getCartBySession();
@@ -29,7 +29,7 @@ export const CartProvider = ({ children }) => {
     };
 
     return (
-        <CartContext.Provider value={{ cart, setCart, cartItems, setCartItems, fetchCart }}>
+        <CartContext.Provider value={{cart, setCart, cartItems, setCartItems, fetchCart}}>
             {children}
         </CartContext.Provider>
     );

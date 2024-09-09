@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import ProductRequests from "../Requests/ProductRequests";
 import {Link} from "react-router-dom";
 import {Container, css, Grid, Pagination, Skeleton} from "@mui/material";
@@ -6,6 +6,7 @@ import CategoryRequests from "../Requests/CategoryRequests";
 import ProductShortCut from "../Components/Homepage/ProductShortCut";
 import BuyOverlay from "../Overlays/BuyOverlay";
 import FiltersAndSortings from "../Components/Homepage/FiltersAndSortings";
+import {debounce} from "lodash";
 
 const paginationStyles = css`
   .MuiPaginationItem-root {
@@ -29,15 +30,15 @@ function Home() {
     const [priceRange, setPriceRange] = useState([20, 37]);
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
-
     useEffect(() => {
         fetchData();
+        fetchProducts()
     }, []);
-
     useEffect(() => {
-        fetchProducts();
+        if (Object.keys(params).length > 1) {
+            debouncedFetchProducts();
+        }
     }, [params]);
-
     const fetchData = async () => {
         const categoriesData = await CategoryRequests.getCategories();
         setCategories(categoriesData);
@@ -49,6 +50,12 @@ function Home() {
         setProducts(productsData.products);
         setPagesCount(productsData.pages);
     }
+    const debouncedFetchProducts = useCallback(debounce(fetchProducts, 500), [params]);
+    useEffect(() => {
+        return () => {
+            debouncedFetchProducts.cancel();
+        };
+    }, [debouncedFetchProducts]);
     const onPageChange = (event, value) => {
         event.preventDefault();
         const newValue = value - 1;

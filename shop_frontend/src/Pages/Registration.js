@@ -13,6 +13,11 @@ function Registration() {
         await AuthRequests.registration(inputsWithDate);
         window.location.href = '/login';
     }
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSubmit();
+        }
+    };
 
     const textFields = [
         { label: "Name", variant: "standard", name: "name", type: "text" },
@@ -25,7 +30,7 @@ function Registration() {
 
     return (
         <div className={'registration-container'} style={{display: 'flex', justifyContent: 'center', textAlign: 'center'}}>
-            <Grid container justifyContent="center" width={500}>
+            <Grid container justifyContent="center" width={500} onKeyDown={handleKeyDown}>
                 <Grid item xs={12}>
                     <Typography variant="h4" align="center" gutterBottom>
                         Registration

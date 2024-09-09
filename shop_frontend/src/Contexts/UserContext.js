@@ -5,7 +5,7 @@ import {CartProvider} from "./CartContext";
 const UserContext = createContext();
 
 export const UserProvider = ({children}) => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(undefined);
 
     useEffect(() => {
         fetchData();
@@ -15,11 +15,12 @@ export const UserProvider = ({children}) => {
             const response = await RegisteredUserRequests.getUser('me');
             setUser(response);
         } catch (e) {
-            console.error(e.message)
+            console.error(e.message);
+            setUser(null);
         }
     };
 
-    return user !== null ? (
+    return user !== undefined ? (
             <UserContext.Provider value={{ user, setUser }}>
                 <CartProvider>{children}</CartProvider>
             </UserContext.Provider>
